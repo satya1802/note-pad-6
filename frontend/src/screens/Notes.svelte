@@ -110,9 +110,7 @@
     loading = true;
     listError = "";
     try {
-      const path = searchTerm
-        ? `/api/notes?q=${encodeURIComponent(searchTerm)}`
-        : "/api/notes";
+      const path = searchTerm ? `/api/notes?q=${encodeURIComponent(searchTerm)}` : "/api/notes";
       const data = await apiFetch(path);
       notes = Array.isArray(data?.notes) ? data.notes : [];
       appliedQuery = searchTerm;
@@ -146,8 +144,7 @@
       });
       notes = [data.note, ...notes];
       totalCount = totalCount + 1;
-      totalWordsCount =
-        totalWordsCount + data.note.body.trim().split(/\s+/).filter(Boolean).length;
+      totalWordsCount = totalWordsCount + data.note.body.trim().split(/\s+/).filter(Boolean).length;
       newId = data.note.id;
       composerOpen = false;
       draftTitle = "";

@@ -224,18 +224,18 @@
           class="border-[3px] bg-white p-7 sm:p-10"
           style="border-color:{brand.primaryColor}; box-shadow:6px 6px 0 {brand.primaryColor}"
         >
-          <p
-            class="text-[11px] uppercase tracking-[0.3em]"
-            style="color:{brand.neutralColor}"
-          >
+          <p class="text-[11px] uppercase tracking-[0.3em]" style="color:{brand.neutralColor}">
             Access denied
           </p>
-          <h1 class="mt-5 text-3xl leading-[1.08] sm:text-4xl" style="font-family:{brand.fontHeading}">
+          <h1
+            class="mt-5 text-3xl leading-[1.08] sm:text-4xl"
+            style="font-family:{brand.fontHeading}"
+          >
             This note isn't on your desk
           </h1>
           <p class="mt-5 max-w-[60ch] text-[14px] leading-[1.6]">
-            Notes belong to the account that wrote them. Notepad 6 checks the owner on every read, so
-            nobody else can open yours either.
+            Notes belong to the account that wrote them. Notepad 6 checks the owner on every read,
+            so nobody else can open yours either.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
             <button
@@ -404,11 +404,7 @@
               style="border-color:{brand.primaryColor}; background-color:{brand.primaryColor}; color:{brand.backgroundColor}; box-shadow:5px 5px 0 {brand.accentColor}; outline-color:{brand.accentColor}"
             >
               {#if saving}
-                <Icon
-                  name="Clock"
-                  class="h-4 w-4 motion-safe:animate-spin"
-                  aria-hidden="true"
-                />
+                <Icon name="Clock" class="h-4 w-4 motion-safe:animate-spin" aria-hidden="true" />
                 Saving…
               {:else}
                 <Icon name="Check" class="h-4 w-4" aria-hidden="true" />
@@ -452,7 +448,11 @@
       class="relative w-full max-w-md border-[3px] bg-white p-7"
       style="border-color:{brand.primaryColor}; box-shadow:8px 8px 0 {brand.primaryColor}"
     >
-      <h2 id="delete-heading" class="text-[28px] leading-[1.1]" style="font-family:{brand.fontHeading}">
+      <h2
+        id="delete-heading"
+        class="text-[28px] leading-[1.1]"
+        style="font-family:{brand.fontHeading}"
+      >
         Delete this note?
       </h2>
       <p id="delete-copy" class="mt-4 text-[13px] leading-[1.65]">
