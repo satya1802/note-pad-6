@@ -80,6 +80,80 @@ def test_ac010_rejects_note_with_no_title_and_no_body() -> None:
     assert listing.get_json()["notes"] == []
 
 
+def test_ac017_list_orders_by_updated_at_desc() -> None:
+    client = _signed_in_client()
+    first = client.post("/api/notes", json={"title": "First", "body": "a"}).get_json()["note"]
+    client.post("/api/notes", json={"title": "Second", "body": "b"})
+
+    # Touch the older note so it becomes most recently updated.
+    client.put(f"/api/notes/{first['id']}", json={"title": "First", "body": "a updated"})
+
+    listing = client.get("/api/notes")
+    titles = [n["title"] for n in listing.get_json()["notes"]]
+    assert titles == ["First", "Second"]
+
+
+def test_ac018_empty_list_returns_200_empty_array() -> None:
+    client = _signed_in_client()
+
+    response = client.get("/api/notes")
+
+    assert response.status_code == 200
+    assert response.get_json()["notes"] == []
+
+
+def test_ac019_search_matches_title_or_body_case_insensitively() -> None:
+    client = _signed_in_client()
+    client.post("/api/notes", json={"title": "Grocery List", "body": "milk, eggs"})
+    client.post("/api/notes", json={"title": "Other", "body": "unrelated text"})
+
+    response = client.get("/api/notes?q=GROCERY")
+
+    assert response.status_code == 200
+    notes = response.get_json()["notes"]
+    assert len(notes) == 1
+    assert notes[0]["title"] == "Grocery List"
+
+    body_match = client.get("/api/notes?q=eggs")
+    assert [n["title"] for n in body_match.get_json()["notes"]] == ["Grocery List"]
+
+
+def test_ac020_search_no_matches_returns_empty_array() -> None:
+    client = _signed_in_client()
+    client.post("/api/notes", json={"title": "Grocery List", "body": "milk, eggs"})
+
+    response = client.get("/api/notes?q=nonexistentterm")
+
+    assert response.status_code == 200
+    assert response.get_json()["notes"] == []
+
+
+def test_ac021_search_never_returns_other_users_notes() -> None:
+    client_a = _signed_in_client()
+    client_b = _signed_in_client()
+    client_a.post("/api/notes", json={"title": "Shared Term", "body": "a body"})
+    client_b.post("/api/notes", json={"title": "Shared Term", "body": "b body"})
+
+    response = client_a.get("/api/notes?q=Shared")
+
+    assert response.status_code == 200
+    notes = response.get_json()["notes"]
+    assert len(notes) == 1
+    assert notes[0]["title"] == "Shared Term"
+    assert notes[0]["body"] == "a body"
+
+
+def test_ac_blank_q_behaves_as_unfiltered_list() -> None:
+    client = _signed_in_client()
+    client.post("/api/notes", json={"title": "A", "body": "a"})
+    client.post("/api/notes", json={"title": "B", "body": "b"})
+
+    response = client.get("/api/notes?q=")
+
+    assert response.status_code == 200
+    assert len(response.get_json()["notes"]) == 2
+
+
 def test_ac_get_notes_requires_session() -> None:
     client = _client()
 
@@ -154,9 +228,7 @@ def test_ac013_put_persists_changes_and_updates_timestamp() -> None:
         "note"
     ]
 
-    response = client.put(
-        f"/api/notes/{created['id']}", json={"title": "New", "body": "New body"}
-    )
+    response = client.put(f"/api/notes/{created['id']}", json={"title": "New", "body": "New body"})
 
     assert response.status_code == 200
     note = response.get_json()["note"]

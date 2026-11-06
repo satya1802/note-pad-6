@@ -133,4 +133,123 @@ describe("Notes", () => {
 
     await waitFor(() => expect(go).toHaveBeenCalledWith("/sign-in"));
   });
+
+  it("[AC-017] shows notes in the order the API returned them, without re-sorting client-side", async () => {
+    setUser();
+    const newer = {
+      id: "nt_b",
+      title: "Newer",
+      body: "edited most recently",
+      created_at: "2026-10-01T00:00:00+00:00",
+      updated_at: "2026-11-05T00:00:00+00:00",
+    };
+    const older = {
+      id: "nt_a",
+      title: "Older",
+      body: "edited first",
+      created_at: "2026-11-01T00:00:00+00:00",
+      updated_at: "2026-11-01T00:00:00+00:00",
+    };
+    // `newer`'s created_at is earlier than `older`'s: if the screen re-sorted by
+    // created_at client-side it would come out second, not first.
+    mockedApiFetch.mockResolvedValueOnce({ notes: [newer, older] });
+    render(Notes);
+
+    await waitFor(() => expect(mockedApiFetch).toHaveBeenCalledWith("/api/notes"));
+    const firstTitle = await screen.findByText("Newer");
+    const secondTitle = await screen.findByText("Older");
+    expect(
+      firstTitle.compareDocumentPosition(secondTitle) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("[AC-018] with no notes at all shows an empty-state message inviting the first note", async () => {
+    setUser();
+    mockedApiFetch.mockResolvedValueOnce({ notes: [] });
+    render(Notes);
+
+    await waitFor(() => expect(mockedApiFetch).toHaveBeenCalledWith("/api/notes"));
+    expect(await screen.findByText(/nothing filed yet/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /write your first note/i })).toBeInTheDocument();
+  });
+
+  it("[AC-019] typing in the search box queries GET /api/notes?q=<text> debounced and shows only what the API returns", async () => {
+    setUser();
+    const unrelated = {
+      id: "nt_1",
+      title: "Shopping list",
+      body: "milk, eggs",
+      created_at: "2026-11-01T00:00:00+00:00",
+      updated_at: "2026-11-01T00:00:00+00:00",
+    };
+    mockedApiFetch.mockResolvedValueOnce({ notes: [unrelated] });
+    render(Notes);
+    await waitFor(() => expect(mockedApiFetch).toHaveBeenCalledWith("/api/notes"));
+    await screen.findByText("Shopping list");
+
+    // Server-returned note that does not itself contain "lease" -- proves the result
+    // comes from the server, not a client-side filter of the stale list.
+    const serverMatch = {
+      id: "nt_2",
+      title: "Flat renewal",
+      body: "talk to the landlord",
+      created_at: "2026-11-02T00:00:00+00:00",
+      updated_at: "2026-11-06T00:00:00+00:00",
+    };
+    mockedApiFetch.mockResolvedValueOnce({ notes: [serverMatch] });
+
+    await fireEvent.input(screen.getByLabelText(/search titles and body text/i), {
+      target: { value: "lease" },
+    });
+
+    await waitFor(() => expect(mockedApiFetch).toHaveBeenCalledWith("/api/notes?q=lease"));
+    expect(await screen.findByText("Flat renewal")).toBeInTheDocument();
+    expect(screen.queryByText("Shopping list")).not.toBeInTheDocument();
+  });
+
+  it("[AC-020] a search with no matches shows a 'no results' message distinct from the empty state", async () => {
+    setUser();
+    const note = {
+      id: "nt_1",
+      title: "Shopping list",
+      body: "milk, eggs",
+      created_at: "2026-11-01T00:00:00+00:00",
+      updated_at: "2026-11-01T00:00:00+00:00",
+    };
+    mockedApiFetch.mockResolvedValueOnce({ notes: [note] });
+    render(Notes);
+    await waitFor(() => expect(mockedApiFetch).toHaveBeenCalledWith("/api/notes"));
+    await screen.findByText("Shopping list");
+
+    mockedApiFetch.mockResolvedValueOnce({ notes: [] });
+    await fireEvent.input(screen.getByLabelText(/search titles and body text/i), {
+      target: { value: "zzz" },
+    });
+
+    await waitFor(() => expect(mockedApiFetch).toHaveBeenCalledWith("/api/notes?q=zzz"));
+    expect(await screen.findByText(/no match/i)).toBeInTheDocument();
+    expect(screen.queryByText(/nothing filed yet/i)).not.toBeInTheDocument();
+  });
+
+  it("[AC] redirects to sign-in on a 401 returned from a search request", async () => {
+    setUser();
+    const note = {
+      id: "nt_1",
+      title: "Shopping list",
+      body: "milk, eggs",
+      created_at: "2026-11-01T00:00:00+00:00",
+      updated_at: "2026-11-01T00:00:00+00:00",
+    };
+    mockedApiFetch.mockResolvedValueOnce({ notes: [note] });
+    render(Notes);
+    await waitFor(() => expect(mockedApiFetch).toHaveBeenCalledWith("/api/notes"));
+    await screen.findByText("Shopping list");
+
+    mockedApiFetch.mockRejectedValueOnce(new ApiError(401, {}, "failed"));
+    await fireEvent.input(screen.getByLabelText(/search titles and body text/i), {
+      target: { value: "x" },
+    });
+
+    await waitFor(() => expect(go).toHaveBeenCalledWith("/sign-in"));
+  });
 });

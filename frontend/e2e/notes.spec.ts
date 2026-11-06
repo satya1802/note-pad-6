@@ -118,3 +118,73 @@ test("[NFR-004] the notes list renders without horizontal overflow at mobile and
   );
   expect(overflow).toBe(false);
 });
+
+test("[AC-017] notes appear newest-updated first, each with a title and timestamps, at a mobile viewport", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 667 });
+  const email = uniqueEmail("order-mobile");
+  await registerAndLand(page, email);
+  await goToNotesFromRegisterSuccess(page);
+
+  await openComposer(page);
+  await page.locator("#note-title").fill("Older note");
+  await page.locator("#note-body").fill("first body");
+  await page.getByRole("button", { name: "Save note" }).click();
+  await expect(page.getByRole("status")).toContainText("Saved", { timeout: 10_000 });
+
+  await openComposer(page);
+  await page.locator("#note-title").fill("Newer note");
+  await page.locator("#note-body").fill("second body");
+  await page.getByRole("button", { name: "Save note" }).click();
+  await expect(page.getByRole("status")).toContainText("Saved", { timeout: 10_000 });
+
+  const titles = page.locator("h3 button", { hasText: /note$/ });
+  await expect(titles.first()).toHaveText("Newer note");
+  await expect(titles.nth(1)).toHaveText("Older note");
+
+  // Each row shows both Updated and Created timestamps.
+  await expect(page.getByText("Updated", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(/^Created /).first()).toBeVisible();
+});
+
+test("[AC-018] a brand-new account sees the empty-state invitation", async ({ page }) => {
+  const email = uniqueEmail("empty-state");
+  await registerAndLand(page, email);
+  await goToNotesFromRegisterSuccess(page);
+
+  await expect(page.getByText("Nothing filed yet")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Write your first note" })).toBeVisible();
+});
+
+test("[AC-019][AC-020] searching a word filters the list; a nonsense query shows the no-results message", async ({
+  page,
+}) => {
+  const email = uniqueEmail("search");
+  await registerAndLand(page, email);
+  await goToNotesFromRegisterSuccess(page);
+
+  await openComposer(page);
+  await page.locator("#note-title").fill("Grocery list");
+  await page.locator("#note-body").fill("milk, eggs");
+  await page.getByRole("button", { name: "Save note" }).click();
+  await expect(page.getByRole("status")).toContainText("Saved", { timeout: 10_000 });
+
+  await openComposer(page);
+  await page.locator("#note-title").fill("Unrelated reminder");
+  await page.locator("#note-body").fill("call the dentist");
+  await page.getByRole("button", { name: "Save note" }).click();
+  await expect(page.getByRole("status")).toContainText("Saved", { timeout: 10_000 });
+
+  await page.locator("#note-search").fill("grocery");
+  await expect(page.getByRole("button", { name: "Grocery list" })).toBeVisible({
+    timeout: 10_000,
+  });
+  await expect(page.getByRole("button", { name: "Unrelated reminder" })).not.toBeVisible();
+
+  await page.locator("#note-search").fill("zzzznonexistentzzzz");
+  await expect(page.getByText("Nothing of yours says", { exact: false })).toBeVisible({
+    timeout: 10_000,
+  });
+  await expect(page.getByRole("button", { name: "Grocery list" })).not.toBeVisible();
+});

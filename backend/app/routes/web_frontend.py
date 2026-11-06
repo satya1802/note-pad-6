@@ -29,8 +29,9 @@ bp = Blueprint("web_frontend", __name__)
 def get_api_notes() -> dict[str, object]:
     """List the current user's notes ordered by created_at desc; when q is present,
     full-text search title and body of only the user's notes."""
+    q = request.args.get("q")
     with SessionLocal() as session:
-        notes = list_notes(session, current_user.id)
+        notes = list_notes(session, current_user.id, q)
         return jsonify({"notes": [serialize_note(note) for note in notes]}), 200
 
 
