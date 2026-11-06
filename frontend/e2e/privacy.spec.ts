@@ -21,13 +21,6 @@ async function signOut(page: Page): Promise<void> {
   await expect(page).toHaveURL(/\/sign-in$/);
 }
 
-async function signIn(page: Page, email: string): Promise<void> {
-  await page.locator("#signin-email").fill(email);
-  await page.locator("#signin-password").fill(PASSWORD);
-  await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).toHaveURL(/\/notes$/, { timeout: 15_000 });
-}
-
 /** [AC-022][AC-023] User A's note is invisible to user B, both in the list and when
  * user B navigates straight to the note's URL. */
 async function runIsolationFlow(page: Page, tag: string): Promise<void> {
