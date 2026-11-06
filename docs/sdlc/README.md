@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 build simple note pad
 
-**Documentation version:** v5
+**Documentation version:** v6
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -15,7 +15,7 @@ build simple note pad
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 7 entries |
-| [Development](development/README.md) | 6 entries |
+| [Development](development/README.md) | 7 entries |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
@@ -26,12 +26,12 @@ build simple note pad
 | [Developer guide](development/developer-guide.md) | generated |
 | [API reference](development/api-reference.md) | 10 routes |
 | [Test report](testing/test-report.md) | not run yet |
-| [Tests](testing/test-cases.md) | 33 tests |
+| [Tests](testing/test-cases.md) | 63 tests |
 | [Deployment guide](deployment/deployment-guide.md) | not deployed yet |
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 11 requirements |
-| [Changelog](CHANGELOG.md) | 5 versions |
+| [Changelog](CHANGELOG.md) | 6 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -50,11 +50,14 @@ build simple note pad
 
 ### Development
 
-- EPIC-001 through EPIC-004 carry no points and no assigned role, consistent with their role as organizing epics rather than directly estimated work items; confirm this is intentional.
-- No individual delivery/commit confirmation was given for sub-tasks US-004-T1, US-004-T2, US-004-T3 separately from the parent story US-004.
-- Discrepancy: run status says 'completed' but no delivery evidence (ticket status or commit) exists for US-005 through US-011 -- confirm whether these were actually completed, are still in progress, or the run status label is inaccurate.
-- Sprint 2 scope (note view/edit/delete, notes list, search) has no recorded ticket outcomes.
-- Sprint 3 scope (per-user privacy hardening, confirming no payment prompts) has no recorded ticket outcomes.
+- No approver name or date recorded for the plan approval.
+- No delivery status recorded for US-001 (Register a new account).
+- No delivery status recorded for US-002 (Sign in to my account).
+- No delivery status recorded for US-003 (Sign out of my account).
+- No delivery status recorded for US-004 (Create a note) or its tasks US-004-T1, US-004-T2, US-004-T3.
+- No delivery status recorded for US-010 (Keep each user's notes private) -- a privacy/security-critical story.
+- No delivery status recorded for US-011 (Use the app free of charge).
+- Discrepancy: overall dev run status is 'completed' but ticket coverage is only 5 of 11 planned stories -- needs confirmation of whether the remaining stories were actually built, skipped, or simply not reported.
 
 ### Testing
 
