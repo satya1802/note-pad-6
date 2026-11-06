@@ -3,9 +3,9 @@
 > Maintained by QuorQ AI SDLC. Text between `sdlc:auto` markers is regenerated; anything outside them is yours and is kept.
 
 <!-- sdlc:auto:start summary -->
-63 tests · Passed 54 · Failed 0 · Skipped 0 · Not run 9
+79 tests · Passed 65 · Failed 0 · Skipped 0 · Not run 14
 
-Acceptance criteria covered: 21/24 · passing: 14/24
+Acceptance criteria covered: 24/24 · passing: 14/24
 <!-- sdlc:auto:end summary -->
 
 <!-- sdlc:auto:start tests -->
@@ -20,8 +20,10 @@ Acceptance criteria covered: 21/24 · passing: 14/24
 | AC-001 | Register > [AC-001] submits to the register endpoint and lands on the notes list on success | Unit | Passed | `frontend/src/screens/Register.test.ts` |
 | AC-002 | Register > [AC-002] shows an email-already-in-use message on a 409 and has no hardcoded email list | Unit | Passed | `frontend/src/screens/Register.test.ts` |
 | AC-003 | Register > [AC-003] shows the field-level 422 error returned by the server | Unit | Passed | `frontend/src/screens/Register.test.ts` |
+| AC-024 | Register > [AC-024] registering never shows a payment prompt, card field or upgrade offer | Unit | Passed | `frontend/src/screens/Register.test.ts` |
 | AC-004 | SignIn > [AC-004] submits to the login endpoint and navigates to the notes list on success | Unit | Passed | `frontend/src/screens/SignIn.test.ts` |
 | AC-005 | SignIn > [AC-005, NFR-002] shows one generic error for wrong credentials, naming no field, with no demo-account shortcut | Unit | Passed | `frontend/src/screens/SignIn.test.ts` |
+| AC-024 | SignIn > [AC-024] signing in asks only for email and password, never payment or billing details | Unit | Passed | `frontend/src/screens/SignIn.test.ts` |
 | AC-001 | test_ac001_register_creates_account_and_active_session | Integration | Passed | `backend/tests/integration/test_auth.py` |
 | AC-002 | test_ac002_register_duplicate_email_returns_409 | Integration | Passed | `backend/tests/integration/test_auth.py` |
 | AC-003 | test_ac003_register_invalid_email_and_short_password_returns_422 | Integration | Passed | `backend/tests/integration/test_auth.py` |
@@ -41,6 +43,7 @@ Acceptance criteria covered: 21/24 · passing: 14/24
 | AC-018 | Notes > [AC-018] with no notes at all shows an empty-state message inviting the first note | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | AC-019 | Notes > [AC-019] typing in the search box queries GET /api/notes?q=<text> debounced and shows only what the API returns | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | AC-020 | Notes > [AC-020] a search with no matches shows a 'no results' message distinct from the empty state | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
+| AC-024 | Notes > [AC-024] the notes list and the new-note form never show a payment or upgrade prompt | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | — | Notes > [AC] redirects to sign-in on a 401 from GET /api/notes | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | — | Notes > [AC] redirects to sign-in on a 401 returned from a search request | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
 | — | Notes > the seeded sample notes and the offline toggle are gone | Unit | Passed | `frontend/src/screens/Notes.test.ts` |
@@ -87,6 +90,31 @@ Acceptance criteria covered: 21/24 · passing: 14/24
 | AC-015 | Note > [AC-015] confirming delete calls DELETE /api/notes/{id} and returns to the notes list | Unit | Passed | `frontend/src/screens/Note.test.ts` |
 | AC-016 | Note > [AC-016] cancelling the confirmation with Escape leaves the note unchanged and still displayed | Unit | Passed | `frontend/src/screens/Note.test.ts` |
 | AC-016 | Note > [AC-016] cancelling the confirmation with the button leaves the note unchanged and still displayed | Unit | Passed | `frontend/src/screens/Note.test.ts` |
+| AC-024 | Note > [AC-024] viewing, editing and deleting a note never shows a payment or upgrade prompt | Unit | Passed | `frontend/src/screens/Note.test.ts` |
+
+## Sprint 3
+
+### US-010: Keep each user's notes private
+
+| Criteria | Test | Level | Result | File |
+|---|---|---|---|---|
+| AC-022 | test_ac022_list_search_get_put_delete_never_touch_other_users_notes | Integration | Passed | `backend/tests/integration/test_privacy.py` |
+| AC-023 | test_ac023_get_put_delete_of_other_users_note_id_returns_404_without_leaking | Integration | Passed | `backend/tests/integration/test_privacy.py` |
+| — | test_all_five_notes_endpoints_return_401_without_active_session | Integration | Passed | `backend/tests/integration/test_privacy.py` |
+| AC-022, AC-023 | [AC-022][AC-023] user B never sees user A's note in the list or via direct URL — desktop viewport | E2E | Not run yet | `frontend/e2e/privacy.spec.ts` |
+| AC-022, AC-023 | [AC-022][AC-023] user B never sees user A's note in the list or via direct URL — mobile viewport | E2E | Not run yet | `frontend/e2e/privacy.spec.ts` |
+
+### US-011: Use the app free of charge
+
+| Criteria | Test | Level | Result | File |
+|---|---|---|---|---|
+| AC-024 | test_ac024_full_note_lifecycle_never_mentions_or_requires_payment | Unit | Passed | `backend/tests/test_free_access.py` |
+| AC-024 | test_ac024_no_billing_or_subscription_endpoint_exists | Unit | Passed | `backend/tests/test_free_access.py` |
+| AC-024 | test_ac024_registration_never_mentions_or_requires_payment | Unit | Passed | `backend/tests/test_free_access.py` |
+| AC-024 | test_ac024_sign_in_sign_out_never_mentions_or_requires_payment | Unit | Passed | `backend/tests/test_free_access.py` |
+| AC-024 | [AC-024] registration, sign-in and every note feature never ask for payment — desktop viewport | E2E | Not run yet | `frontend/e2e/free-access.spec.ts` |
+| AC-024 | [AC-024] registration, sign-in and every note feature never ask for payment — mobile viewport | E2E | Not run yet | `frontend/e2e/free-access.spec.ts` |
+| AC-024 | [AC-024] the API contract never returns a payment-required status or billing-shaped fields | E2E | Not run yet | `frontend/e2e/free-access.spec.ts` |
 
 ## Project setup
 

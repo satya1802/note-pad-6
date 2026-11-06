@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 build simple note pad
 
-**Documentation version:** v7
+**Documentation version:** v8
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -15,7 +15,7 @@ build simple note pad
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 7 entries |
-| [Development](development/README.md) | 7 entries |
+| [Development](development/README.md) | 8 entries |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
@@ -26,12 +26,12 @@ build simple note pad
 | [Developer guide](development/developer-guide.md) | generated |
 | [API reference](development/api-reference.md) | 10 routes |
 | [Test report](testing/test-report.md) | not run yet |
-| [Tests](testing/test-cases.md) | 63 tests |
+| [Tests](testing/test-cases.md) | 79 tests |
 | [Deployment guide](deployment/deployment-guide.md) | not deployed yet |
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 11 requirements |
-| [Changelog](CHANGELOG.md) | 7 versions |
+| [Changelog](CHANGELOG.md) | 8 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -50,14 +50,12 @@ build simple note pad
 
 ### Development
 
-- No approver name or date recorded for the plan approval.
-- No delivery status recorded for US-001 (Register a new account).
-- No delivery status recorded for US-002 (Sign in to my account).
-- No delivery status recorded for US-003 (Sign out of my account).
-- No delivery status recorded for US-004 (Create a note) or its tasks US-004-T1, US-004-T2, US-004-T3.
-- No delivery status recorded for US-010 (Keep each user's notes private) -- a privacy/security-critical story.
-- No delivery status recorded for US-011 (Use the app free of charge).
-- Discrepancy: overall dev run status is 'completed' but ticket coverage is only 5 of 11 planned stories -- needs confirmation of whether the remaining stories were actually built, skipped, or simply not reported.
+- Input does not explicitly map individual backlog items to a specific sprint number -- sprint-to-item assignment above is inferred only from sprint goal wording, not stated directly.
+- No development ticket/commit recorded for US-001, US-002, or US-003 -- delivery status unknown.
+- No development ticket/commit recorded for US-004 (or its sub-tasks US-004-T1/T2/T3), US-005, US-006, or US-007 -- delivery status unknown.
+- No development ticket/commit recorded for US-008 or US-009 -- delivery status unknown.
+- Discrepancy: run status says 'completed' but 9 of 11 stories (US-001-US-009) and 3 sub-tasks (US-004-T1, US-004-T2, US-004-T3) have no delivery/ticket record -- unclear if they were actually built, not yet reported, or completed under untracked tickets.
+- Cannot confirm whether account registration/sign-in/sign-out (US-001-003), note creation/view/edit/delete (US-004-007), or notes list/search (US-008-009) were implemented.
 
 ### Testing
 

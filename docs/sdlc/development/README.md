@@ -5,70 +5,76 @@
 <!-- sdlc:auto:start narrative -->
 ### DEV-PLAN-001 · approved · source: plan
 
-Sprint Plan version 1 was approved, organizing the note pad build into three 20-point sprints across four epics: authentication, note CRUD, notes list/search, and private per-user free access.
+Development plan version 1, approved, organizes the project into 3 sprints of capacity 20 each, spanning 4 epics and 11 user stories.
 
-Plan status: approved, version 1.
-- Sprint 1 (capacity 20): Stand up accounts (register/sign-in/sign-out) and enable creating notes, including users and notes schema. Items: EPIC-001 Account Registration and Authentication; US-001 Register a new account (5 pts, backend-agent); US-002 Sign in to my account (5 pts, backend-agent); US-003 Sign out of my account (2 pts, backend-agent); EPIC-002 Note Creation, Editing, Viewing and Deletion; US-004 Create a note (8 pts, backend-agent) with tasks US-004-T1 Add notes table migration (backend-agent), US-004-T2 Implement POST /api/notes endpoint (backend-agent), US-004-T3 Build note creation screen (frontend-agent).
-- Sprint 2 (capacity 20): Complete note CRUD (view, edit, delete), the personal notes list, and text search. Items: US-005 View a note (3 pts, frontend-agent); US-006 Edit a note (3 pts, frontend-agent); US-007 Delete a note (2 pts, frontend-agent); EPIC-003 Notes List and Search; US-008 Browse my notes list (5 pts, frontend-agent); US-009 Search my notes (5 pts, backend-agent).
-- Sprint 3 (capacity 20): Harden per-user note privacy across all endpoints and confirm the app is free of any payment prompts. Items: EPIC-004 Private Per-User Storage and Free Access; US-010 Keep each user's notes private (3 pts, security-agent); US-011 Use the app free of charge (1 pt, qa-agent).
+Plan status: approved, version 1. Sprint 1 goal: stand up accounts (register/sign-in/sign-out) and enable creating notes, including users and notes schema. Sprint 2 goal: complete note CRUD (view, edit, delete), the personal notes list, and text search. Sprint 3 goal: harden per-user note privacy across all endpoints and confirm the app is free of any payment prompts. Each sprint has capacity 20 points.
 
-**Related:** EPIC-001, EPIC-002, EPIC-003, EPIC-004, US-001, US-002, US-003, US-004, US-004-T1, US-004-T2, US-004-T3, US-005, US-006, US-007, US-008, US-009, US-010, US-011
+**Related:** US-001, US-002, US-003, US-004, US-005, US-006, US-007, US-008, US-009, US-010, US-011
 
-- ⚠ No approver name or date recorded for the plan approval.
+- ⚠ Input does not explicitly map individual backlog items to a specific sprint number -- sprint-to-item assignment above is inferred only from sprint goal wording, not stated directly.
 
-### DEV-US-005 · approved · source: dev:TICKET-US-005
+### DEV-EPIC-001 · draft · source: plan:EPIC-001
 
-Ticket for viewing a note was delivered by the frontend-agent as planned in Sprint 2.
+Epic covering account registration and authentication: register, sign in, sign out.
 
-Ticket US-005 'View a note' status=delivered, commit=1aff12aeee14ab46b13c6764fdb3a41dcfa63adb.
+EPIC-001 'Account Registration and Authentication' (role unassigned) contains: US-001 Register a new account (5 pts, backend-agent); US-002 Sign in to my account (5 pts, backend-agent); US-003 Sign out of my account (2 pts, backend-agent). Aligns with Sprint 1 goal of standing up accounts.
 
-**Related:** US-005
+**Related:** US-001, US-002, US-003
 
-### DEV-US-006 · approved · source: dev:TICKET-US-006
+- ⚠ No development ticket/commit recorded for US-001, US-002, or US-003 -- delivery status unknown.
 
-Ticket for editing a note was delivered by the frontend-agent as planned in Sprint 2.
+### DEV-EPIC-002 · draft · source: plan:EPIC-002
 
-Ticket US-006 'Edit a note' status=delivered, commit=1aff12aeee14ab46b13c6764fdb3a41dcfa63adb.
+Epic covering note creation, viewing, editing, and deletion.
 
-**Related:** US-006
+EPIC-002 'Note Creation, Editing, Viewing and Deletion' (role unassigned) contains: US-004 Create a note (8 pts, backend-agent), broken into US-004-T1 Add notes table migration (backend-agent), US-004-T2 Implement POST /api/notes endpoint (backend-agent), and US-004-T3 Build note creation screen (frontend-agent); US-005 View a note (3 pts, frontend-agent); US-006 Edit a note (3 pts, frontend-agent); US-007 Delete a note (2 pts, frontend-agent). Aligns with Sprint 1 (creation) and Sprint 2 (view/edit/delete) goals.
 
-### DEV-US-007 · approved · source: dev:TICKET-US-007
+**Related:** US-004, US-005, US-006, US-007
 
-Ticket for deleting a note was delivered by the frontend-agent as planned in Sprint 2.
+- ⚠ No development ticket/commit recorded for US-004 (or its sub-tasks US-004-T1/T2/T3), US-005, US-006, or US-007 -- delivery status unknown.
 
-Ticket US-007 'Delete a note' status=delivered, commit=1aff12aeee14ab46b13c6764fdb3a41dcfa63adb.
+### DEV-EPIC-003 · draft · source: plan:EPIC-003
 
-**Related:** US-007
+Epic covering the personal notes list and text search.
 
-### DEV-US-008 · approved · source: dev:TICKET-US-008
+EPIC-003 'Notes List and Search' (role unassigned) contains: US-008 Browse my notes list (5 pts, frontend-agent); US-009 Search my notes (5 pts, backend-agent). Aligns with Sprint 2 goal of completing the personal notes list and text search.
 
-Ticket for browsing the personal notes list was delivered by the frontend-agent as planned in Sprint 2.
+**Related:** US-008, US-009
 
-Ticket US-008 'Browse my notes list' status=delivered, commit=1aff12aeee14ab46b13c6764fdb3a41dcfa63adb.
+- ⚠ No development ticket/commit recorded for US-008 or US-009 -- delivery status unknown.
 
-**Related:** US-008, EPIC-003
+### DEV-EPIC-004 · draft · source: plan:EPIC-004
 
-### DEV-US-009 · approved · source: dev:TICKET-US-009
+Epic covering private per-user note storage and free access to the app.
 
-Ticket for searching notes was delivered by the backend-agent as planned in Sprint 2.
+EPIC-004 'Private Per-User Storage and Free Access' (role unassigned) contains: US-010 Keep each user's notes private (3 pts, security-agent); US-011 Use the app free of charge (1 pt, qa-agent). Aligns with Sprint 3 goal of hardening per-user note privacy and confirming the app is free of payment prompts.
 
-Ticket US-009 'Search my notes' status=delivered, commit=1aff12aeee14ab46b13c6764fdb3a41dcfa63adb.
+**Related:** US-010, US-011
 
-**Related:** US-009, EPIC-003
+### DEV-TICKET-US-010 · approved · source: dev:US-010
 
-### DEV-GAP-001 · draft · source: dev
+Ticket for keeping each user's notes private was delivered.
 
-The development run is marked 'completed', but no ticket-level delivery status was provided for 6 of the 11 planned stories, including all of Sprint 1 and all of Sprint 3.
+Ticket US-010 'Keep each user's notes private' - status: delivered, commit f5f5ab9300cedecab56c646377603cda06163265.
 
-Dev run status=completed, yet only tickets for US-005 through US-009 (Sprint 2 scope) were reported. No ticket entries were given for: US-001 Register a new account, US-002 Sign in to my account, US-003 Sign out of my account, US-004 Create a note (nor its subtasks US-004-T1/T2/T3), US-010 Keep each user's notes private, or US-011 Use the app free of charge. Because Sprint 1 covers the users/notes schema and account creation that later stories depend on, and Sprint 3 covers privacy hardening and the free-access confirmation, their absence from the delivered-tickets list cannot be assumed to mean either completion or non-completion.
+**Related:** US-010, EPIC-004
 
-**Related:** US-001, US-002, US-003, US-004, US-004-T1, US-004-T2, US-004-T3, US-010, US-011, EPIC-001, EPIC-002, EPIC-004
+### DEV-TICKET-US-011 · approved · source: dev:US-011
 
-- ⚠ No delivery status recorded for US-001 (Register a new account).
-- ⚠ No delivery status recorded for US-002 (Sign in to my account).
-- ⚠ No delivery status recorded for US-003 (Sign out of my account).
-- ⚠ No delivery status recorded for US-004 (Create a note) or its tasks US-004-T1, US-004-T2, US-004-T3.
-- ⚠ No delivery status recorded for US-010 (Keep each user's notes private) -- a privacy/security-critical story.
-- ⚠ No delivery status recorded for US-011 (Use the app free of charge).
-- ⚠ Discrepancy: overall dev run status is 'completed' but ticket coverage is only 5 of 11 planned stories -- needs confirmation of whether the remaining stories were actually built, skipped, or simply not reported.
+Ticket for free-of-charge app usage was delivered.
+
+Ticket US-011 'Use the app free of charge' - status: delivered, commit fc11232e8c204a3042c07e8ccd83c8e680f2590b.
+
+**Related:** US-011, EPIC-004
+
+### DEV-GAPS-001 · draft · source: dev:run-status
+
+Development run is marked 'completed', but only 2 of the 11 planned stories have recorded ticket evidence.
+
+The development run status is reported as 'completed', yet only tickets for US-010 and US-011 (both from Sprint 3's epic) are listed with status and commit. No ticket records were provided for US-001 through US-009 or for sub-tasks US-004-T1, US-004-T2, US-004-T3, all of which were planned in Sprints 1 and 2.
+
+**Related:** US-001, US-002, US-003, US-004, US-005, US-006, US-007, US-008, US-009
+
+- ⚠ Discrepancy: run status says 'completed' but 9 of 11 stories (US-001-US-009) and 3 sub-tasks (US-004-T1, US-004-T2, US-004-T3) have no delivery/ticket record -- unclear if they were actually built, not yet reported, or completed under untracked tickets.
+- ⚠ Cannot confirm whether account registration/sign-in/sign-out (US-001-003), note creation/view/edit/delete (US-004-007), or notes list/search (US-008-009) were implemented.
 <!-- sdlc:auto:end narrative -->
