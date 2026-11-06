@@ -10,9 +10,7 @@ vi.mock("@/lib/api", async () => {
 });
 
 vi.mock("@/lib/router.svelte", async () => {
-  const actual = await vi.importActual<typeof import("@/lib/router.svelte")>(
-    "@/lib/router.svelte",
-  );
+  const actual = await vi.importActual<typeof import("@/lib/router.svelte")>("@/lib/router.svelte");
   return { ...actual, go: vi.fn() };
 });
 
@@ -50,7 +48,9 @@ describe("SignIn", () => {
 
     const alert = await screen.findByRole("alert");
     expect(alert).toHaveTextContent("That email and password do not match an account.");
-    expect(alert.textContent?.toLowerCase()).not.toMatch(/email is wrong|password is wrong|no such user/);
+    expect(alert.textContent?.toLowerCase()).not.toMatch(
+      /email is wrong|password is wrong|no such user/,
+    );
     expect(screen.queryByText(/demo account/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/fill these in for me/i)).not.toBeInTheDocument();
   });

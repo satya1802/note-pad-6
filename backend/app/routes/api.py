@@ -33,9 +33,7 @@ def post_api_auth_register():
             return jsonify({"error": "validation_failed", "fields": exc.errors}), 422
         except EmailAlreadyInUse:
             return (
-                jsonify(
-                    {"error": "email_in_use", "message": "That email is already registered."}
-                ),
+                jsonify({"error": "email_in_use", "message": "That email is already registered."}),
                 409,
             )
 
@@ -54,9 +52,7 @@ def post_api_auth_login():
         user = authenticate(session, email, password)
         if user is None:
             return (
-                jsonify(
-                    {"error": "invalid_credentials", "message": "Invalid email or password."}
-                ),
+                jsonify({"error": "invalid_credentials", "message": "Invalid email or password."}),
                 401,
             )
 

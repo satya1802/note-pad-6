@@ -11,9 +11,7 @@ vi.mock("@/lib/api", async () => {
 });
 
 vi.mock("@/lib/router.svelte", async () => {
-  const actual = await vi.importActual<typeof import("@/lib/router.svelte")>(
-    "@/lib/router.svelte",
-  );
+  const actual = await vi.importActual<typeof import("@/lib/router.svelte")>("@/lib/router.svelte");
   return { ...actual, go: vi.fn() };
 });
 

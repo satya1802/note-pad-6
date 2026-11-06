@@ -82,9 +82,7 @@ def test_ac005_login_wrong_credentials_returns_single_generic_401() -> None:
     client.post("/api/auth/logout")
 
     wrong_password = client.post("/api/auth/login", json={"email": email, "password": "nope12345"})
-    wrong_email = client.post(
-        "/api/auth/login", json={"email": _email(), "password": MIN_PASSWORD}
-    )
+    wrong_email = client.post("/api/auth/login", json={"email": _email(), "password": MIN_PASSWORD})
 
     assert wrong_password.status_code == 401
     assert wrong_email.status_code == 401

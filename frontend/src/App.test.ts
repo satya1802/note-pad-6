@@ -11,7 +11,8 @@ function stubMe(ok: boolean) {
     vi.fn().mockResolvedValue({
       ok,
       status: ok ? 200 : 401,
-      json: async () => (ok ? { user: { id: "u_1", email: "reader@example.com" } } : { error: "unauthorized" }),
+      json: async () =>
+        ok ? { user: { id: "u_1", email: "reader@example.com" } } : { error: "unauthorized" },
     }),
   );
 }
