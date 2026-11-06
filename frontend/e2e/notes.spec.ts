@@ -71,7 +71,9 @@ test("[AC-009] creating a note with body only derives the title from the first l
   await goToNotesFromRegisterSuccess(page);
 
   await openComposer(page);
-  await page.locator("#note-body").fill("Call the landlord about the boiler\nAsk about the lease too");
+  await page
+    .locator("#note-body")
+    .fill("Call the landlord about the boiler\nAsk about the lease too");
   await page.getByRole("button", { name: "Save note" }).click();
 
   await expect(page.getByRole("status")).toContainText("Saved", { timeout: 10_000 });

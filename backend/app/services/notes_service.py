@@ -47,10 +47,7 @@ def create_note(session: Session, user_id: str, title: str | None, body: str | N
 def list_notes(session: Session, user_id: str) -> list[Note]:
     """Return `user_id`'s notes, newest first."""
     return (
-        session.query(Note)
-        .filter(Note.user_id == user_id)
-        .order_by(Note.created_at.desc())
-        .all()
+        session.query(Note).filter(Note.user_id == user_id).order_by(Note.created_at.desc()).all()
     )
 
 
