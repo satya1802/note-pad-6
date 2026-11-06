@@ -3,6 +3,9 @@ flask-cors==5.0.0
 sqlalchemy==2.0.35
 gunicorn==23.0.0
 psycopg[binary]==3.2.3
+# Already pulled in transitively by Flask, but pinned explicitly because
+# app.services.auth_service imports it directly to sign bearer session tokens.
+itsdangerous==2.2.0
 
 # Checks. The platform installs and runs this file before it reports that the
 # generated tests pass, so the test dependencies belong here rather than in a

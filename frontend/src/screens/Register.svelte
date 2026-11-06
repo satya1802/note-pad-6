@@ -2,7 +2,7 @@
   import { Icon } from "@/lib/ui";
   import { brand } from "@/lib/brand";
   import { useNavigate } from "@/lib/navigate";
-  import { apiFetch, ApiError } from "@/lib/api";
+  import { apiFetch, ApiError, setSessionToken } from "@/lib/api";
   import { session } from "@/lib/session.svelte";
 
   const navigate = useNavigate();
@@ -48,6 +48,11 @@
         method: "POST",
         body: JSON.stringify({ email: email.trim(), password }),
       });
+      // The API and this SPA are on different origins once deployed, so the session
+      // cookie the API also sets is not something a browser reliably keeps sending;
+      // this bearer token, sent back as `Authorization: Bearer <token>`, is what
+      // actually keeps the visitor signed in on every later call.
+      if (data.token) setSessionToken(data.token);
       session.user = data.user;
       session.checked = true;
       createdAt = stamp();

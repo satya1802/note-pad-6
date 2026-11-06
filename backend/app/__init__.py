@@ -17,6 +17,7 @@ from app import models  # noqa: F401 -- imported so the tables register before c
 from app.database import Base, SessionLocal, engine
 from app.routes.api import bp as api_bp
 from app.routes.web_frontend import bp as web_frontend_bp
+from app.services.auth_service import verify_session_token
 
 login_manager = LoginManager()
 
@@ -25,10 +26,30 @@ login_manager = LoginManager()
 def load_user(user_id: str) -> models.User | None:
     """Flask-Login's hook from a session's stored id back to a `User` row.
 
-    Plain id lookup only: this scaffold does not decide how a session is represented
-    (cookie, bearer token, or otherwise) -- the ticket that implements login does, and
-    calls `login_user()` with whatever `User` it has already authenticated.
+    Flask-Login only reaches this when a request carries its own session cookie (set by
+    `login_user()`), which happens on same-origin callers such as the test client. The
+    deployed frontend is cross-origin and never gets that cookie; `load_user_from_request`
+    below is what authenticates it.
     """
+    with SessionLocal() as session:
+        return session.get(models.User, user_id)
+
+
+@login_manager.request_loader
+def load_user_from_request(request) -> models.User | None:  # noqa: ANN001
+    """Flask-Login's fallback when a request carries no session cookie: the bearer
+    token `/api/auth/login` or `/api/auth/register` returned, sent back as
+    `Authorization: Bearer <token>`. This is what the deployed frontend actually uses,
+    since the API and the SPA are on different origins and a cross-origin session
+    cookie is not something a browser reliably keeps sending.
+    """
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        return None
+    token = auth_header[len("Bearer ") :].strip()
+    user_id = verify_session_token(token)
+    if not user_id:
+        return None
     with SessionLocal() as session:
         return session.get(models.User, user_id)
 
@@ -48,9 +69,12 @@ def create_app() -> Flask:
     allowed = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
     CORS(app, origins=allowed or dev_origins, supports_credentials=True)
 
-    # The SPA and API are on different origins, so the session cookie Flask-Login sets
-    # has to be marked SameSite=None (sent cross-site) and Secure (which SameSite=None
-    # requires the browser to see).
+    # The deployed frontend authenticates with the bearer token `/api/auth/login` and
+    # `/api/auth/register` return (see `load_user_from_request` above), not this cookie:
+    # a cross-origin browser drops a session cookie unless every attribute is exactly
+    # right, and that keeps getting stricter regardless. Flask-Login still sets one as a
+    # fallback for a same-origin caller (the test client here); mark it SameSite=None and
+    # Secure so it at least behaves correctly if a cross-origin caller ever receives it.
     app.config["SESSION_COOKIE_SAMESITE"] = "None"
     app.config["SESSION_COOKIE_SECURE"] = True
 

@@ -11,6 +11,7 @@ from app.services.auth_service import (
     EmailAlreadyInUse,
     ValidationError,
     authenticate,
+    generate_session_token,
     register_user,
     serialize_user,
 )
@@ -37,8 +38,12 @@ def post_api_auth_register():
                 409,
             )
 
+        # `login_user` sets a Flask-Login session cookie, which only a same-origin caller
+        # (the test client) will ever send back; the token is what the cross-origin SPA
+        # stores and sends instead, as `Authorization: Bearer <token>`.
         login_user(user)
-        return jsonify({"user": serialize_user(user)}), 201
+        token = generate_session_token(user)
+        return jsonify({"user": serialize_user(user), "token": token}), 201
 
 
 @bp.route("/api/auth/login", methods=["POST"])
@@ -57,7 +62,8 @@ def post_api_auth_login():
             )
 
         login_user(user)
-        return jsonify({"user": serialize_user(user)}), 200
+        token = generate_session_token(user)
+        return jsonify({"user": serialize_user(user), "token": token}), 200
 
 
 @bp.route("/api/auth/logout", methods=["POST"])
