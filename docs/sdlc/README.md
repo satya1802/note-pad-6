@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 build simple note pad
 
-**Documentation version:** v2
+**Documentation version:** v3
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -15,14 +15,14 @@ build simple note pad
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 7 entries |
-| [Development](development/README.md) | 1 entry |
+| [Development](development/README.md) | 8 entries |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
 | [Data model](architecture/data-model.md) | generated |
 | [API (OpenAPI)](architecture/api/openapi.yaml) | generated |
 | [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
-| [Sprint plan](development/sprint-plan.md) | not generated yet |
+| [Sprint plan](development/sprint-plan.md) | 3 sprints |
 | [Developer guide](development/developer-guide.md) | generated |
 | [API reference](development/api-reference.md) | 1 route |
 | [Test report](testing/test-report.md) | not run yet |
@@ -31,7 +31,7 @@ build simple note pad
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 11 requirements |
-| [Changelog](CHANGELOG.md) | 2 versions |
+| [Changelog](CHANGELOG.md) | 3 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -50,7 +50,23 @@ build simple note pad
 
 ### Development
 
-- Development has not started or its output was not provided; no code, tickets, or build status to document.
+- No sprint start/end dates provided.
+- No execution status (in-progress/done, commits, PRs, test results) provided for any backlog item -- only the approved plan and backlog assignments are known.
+- Input does not explicitly map backlog items to sprints; mapping used in sprint entries below is inferred from matching sprint goal text and point totals to item titles, and should be confirmed.
+- Item-to-sprint assignment is inferred from goal wording and point-total match, not explicitly stated in the input.
+- No status reported on whether these items were completed within the sprint.
+- Item-to-sprint assignment is inferred from goal wording, not explicitly stated in the input.
+- Point total (18) does not fully match the 20-point capacity; unclear whether unlisted work fills the remainder or this is planned slack.
+- No status reported on completion of these items.
+- Point total (4) is far below the 20-point capacity; unclear if additional hardening work (not itemized in the input) is planned to fill this sprint.
+- No acceptance criteria, design, or implementation detail provided beyond story titles, points, and assigned role.
+- No completion status reported for any child story.
+- Task-level point estimates not provided for US-004-T1/T2/T3.
+- No completion status, code artifacts, or test results reported for any item in this epic.
+- No completion status reported for either story.
+- No detail on search implementation (e.g. scope, indexing, match behavior) beyond the story title.
+- No completion status, security review findings, or QA test results reported despite security-agent and qa-agent role assignments.
+- No detail on what 'per-user privacy across all endpoints' or 'free of any payment prompts' specifically entails beyond the Sprint 3 goal statement.
 
 ### Testing
 

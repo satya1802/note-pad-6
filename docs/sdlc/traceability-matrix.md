@@ -9,15 +9,15 @@ Built from recorded links, not written by a model: requirement key → plan item
 <!-- sdlc:auto:start matrix -->
 | Requirement | Epic | Title | Plan items | Sprint | Design | Code | Commits | Ticket | Tests | AC tests | Deployed |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| US-001 | EPIC-001 | Register a new account | — | — | — | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
-| US-002 | EPIC-001 | Sign in to my account | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-003 | EPIC-001 | Sign out of my account | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-004 | EPIC-002 | Create a note | — | — | — | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
-| US-005 | EPIC-002 | View a note | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-006 | EPIC-002 | Edit a note | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-007 | EPIC-002 | Delete a note | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-008 | EPIC-003 | Browse my notes list | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-009 | EPIC-003 | Search my notes | — | — | — | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
-| US-010 | EPIC-004 | Keep each user's notes private | — | — | — | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
-| US-011 | EPIC-004 | Use the app free of charge | — | — | — | — | — | not started | not run | 0/1 tested · 0/1 passing | — |
+| US-001 | EPIC-001 | Register a new account | US-001 | 1 | POST /api/auth/register, api_backend, database, users, web_frontend | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
+| US-002 | EPIC-001 | Sign in to my account | US-002 | 1 | GET /api/auth/me, POST /api/auth/login, api_backend, users, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-003 | EPIC-001 | Sign out of my account | US-003 | 1 | POST /api/auth/logout, api_backend, users, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-004 | EPIC-002 | Create a note | US-004, US-004-T1, US-004-T2, US-004-T3 | 1 | POST /api/notes, api_backend, database, notes, web_frontend | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
+| US-005 | EPIC-002 | View a note | US-005 | 2 | GET /api/notes/{id}, api_backend, notes, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-006 | EPIC-002 | Edit a note | US-006 | 2 | PUT /api/notes/{id}, api_backend, notes, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-007 | EPIC-002 | Delete a note | US-007 | 2 | DELETE /api/notes/{id}, api_backend, notes, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-008 | EPIC-003 | Browse my notes list | US-008 | 2 | GET /api/notes, api_backend, notes, web_frontend | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-009 | EPIC-003 | Search my notes | US-009 | 2 | GET /api/notes, api_backend, database, notes, web_frontend | — | — | not started | not run | 0/3 tested · 0/3 passing | — |
+| US-010 | EPIC-004 | Keep each user's notes private | US-010 | 3 | DELETE /api/notes/{id}, GET /api/notes, GET /api/notes/{id}, PUT /api/notes/{id}, api_backend, database, notes, users | — | — | not started | not run | 0/2 tested · 0/2 passing | — |
+| US-011 | EPIC-004 | Use the app free of charge | US-011 | 3 | api_backend, web_frontend | — | — | not started | not run | 0/1 tested · 0/1 passing | — |
 <!-- sdlc:auto:end matrix -->
