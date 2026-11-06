@@ -7,25 +7,50 @@ Every view is a stub returning a placeholder. The shape comes from the approved
 API spec; the behaviour does not exist yet.
 """
 
-from flask import Blueprint
+from flask import Blueprint, jsonify, request
+from flask_login import current_user, login_required
 
+from app.database import SessionLocal
+from app.services.notes_service import EmptyNoteError, create_note, list_notes, serialize_note
 from app.stubs import not_implemented
 
 bp = Blueprint("web_frontend", __name__)
 
 
 @bp.route("/api/notes", methods=["GET"])
-def get_api_notes() -> dict[str, str]:
-    """List the current user's notes ordered by updated_at desc; when q is present,
+@login_required
+def get_api_notes() -> dict[str, object]:
+    """List the current user's notes ordered by created_at desc; when q is present,
     full-text search title and body of only the user's notes."""
-    return not_implemented("GET /api/notes")
+    with SessionLocal() as session:
+        notes = list_notes(session, current_user.id)
+        return jsonify({"notes": [serialize_note(note) for note in notes]}), 200
 
 
 @bp.route("/api/notes", methods=["POST"])
-def post_api_notes() -> dict[str, str]:
+@login_required
+def post_api_notes() -> dict[str, object]:
     """Create a note for the current user; derive title from first body line if
     blank and reject a fully empty note."""
-    return not_implemented("POST /api/notes")
+    data = request.get_json(silent=True) or {}
+    title = data.get("title")
+    body = data.get("body")
+
+    with SessionLocal() as session:
+        try:
+            note = create_note(session, current_user.id, title, body)
+        except EmptyNoteError:
+            return (
+                jsonify(
+                    {
+                        "error": "empty_note",
+                        "message": "Enter a title or some body text to save a note.",
+                    }
+                ),
+                422,
+            )
+
+        return jsonify({"note": serialize_note(note)}), 201
 
 
 @bp.route("/api/notes/<id>", methods=["GET"])

@@ -1,10 +1,9 @@
 <script>
-  /* eslint-disable @typescript-eslint/no-unused-vars -- generated imports, matched generously */
   import { Icon, Input, Label, Stat, Textarea } from "@/lib/ui";
   import { brand } from "@/lib/brand";
   import { useNavigate } from "@/lib/navigate";
-  import { apiFetch } from "@/lib/api";
-  import { clearSession } from "@/lib/session.svelte";
+  import { apiFetch, ApiError } from "@/lib/api";
+  import { session, clearSession } from "@/lib/session.svelte";
 
   const navigate = useNavigate();
 
@@ -23,95 +22,7 @@
     "DEC",
   ];
 
-  const user = {
-    id: "u_8821",
-    email: "satya.ganaraju@quorq.ai",
-    created_at: "2026-04-18T10:02:00",
-  };
-
-  let notes = $state([
-    {
-      id: "nt_1041",
-      user_id: "u_8821",
-      title: "Q4 board pack — pricing walkthrough",
-      body: "Three slides maximum on the price change. Open with churn at 2.1%, not the ARR number — Priya will ask for the cohort split either way. Marcus wants the migration plan for the 14 legacy accounts before anything is published.\n\nDeck to Priya by Friday 13 Nov.",
-      created_at: "2026-10-29T08:14:00",
-      updated_at: "2026-11-06T09:12:00",
-      sync: "synced",
-    },
-    {
-      id: "nt_1039",
-      user_id: "u_8821",
-      title: "Dentist — Dr Okafor, 18 Nov 14:30",
-      body: "Marchmont Dental, 42 Warrender Park Road. Ask about the night guard quote (£180?) and whether the hygienist visit is covered this year. Bring the referral letter from Dr Iyer.",
-      created_at: "2026-11-05T19:40:00",
-      updated_at: "2026-11-05T19:48:00",
-      sync: "synced",
-    },
-    {
-      id: "nt_1012",
-      user_id: "u_8821",
-      title: "Sourdough — 70% hydration timings",
-      body: "Levain 09:00, 1:4:4. Autolyse 11:30 for 45 minutes. Four sets of coil folds, 30 minutes apart. Bulk until 50% rise, about 5 hours at 23°C. Shape 17:00, cold retard overnight. Bake 250°C lid on for 20 min, 230°C lid off for 22.",
-      created_at: "2026-09-02T18:20:00",
-      updated_at: "2026-11-05T07:55:00",
-      sync: "synced",
-    },
-    {
-      id: "nt_1036",
-      user_id: "u_8821",
-      title: "Standup blockers — week of 2 Nov",
-      body: "Mon: staging migration stuck behind the pg_dump restore. Tue: cleared. Wed: waiting on Hana for the search index rebuild — the tsvector column is still null on 312 rows. Thu: nothing blocking, shipped the export fix.",
-      created_at: "2026-11-02T09:05:00",
-      updated_at: "2026-11-04T16:21:00",
-      sync: "queued",
-    },
-    {
-      id: "nt_1034",
-      user_id: "u_8821",
-      title: "Reply to Marguerite about the lease",
-      body: "Draft — do not send yet.\n\nMarguerite, thank you for the revised terms. I can agree to the three-year break clause, but not the service charge uplift at 6%. RPI-linked is the most I can sign off. Could we talk Thursday morning?",
-      created_at: "2026-11-03T21:12:00",
-      updated_at: "2026-11-04T11:03:00",
-      sync: "synced",
-    },
-    {
-      id: "nt_1030",
-      user_id: "u_8821",
-      title: "Packing — Reykjavík, 21–26 Nov",
-      body: "Thermals x3, waterproof shell, swim shorts for the Sky Lagoon, type F adaptor, crampons from Dad. Passport runs to 2029 so that is fine. Book the airport transfer before the 14th — the price doubles after that.",
-      created_at: "2026-10-30T22:10:00",
-      updated_at: "2026-11-03T20:39:00",
-      sync: "synced",
-    },
-    {
-      id: "nt_1028",
-      user_id: "u_8821",
-      title: "Car service quotes — comparison",
-      body: "Kwik Fit Gorgie: £264 full service plus MOT, 18 Nov. Halfords Newhaven Road: £229 but no courtesy car. The independent on Jane Street quoted £198 with a two-week wait. Cambelt due at 80k, currently on 71,340.",
-      created_at: "2026-11-02T13:10:00",
-      updated_at: "2026-11-02T13:27:00",
-      sync: "synced",
-    },
-    {
-      id: "nt_1021",
-      user_id: "u_8821",
-      title: "Reading list after Lisbon",
-      body: "The Book of Disquiet — Pessoa, finish part two. Lisbon: War in the Shadows — Lochery. Night Train to Lisbon — Mercier, borrowed from Tomás, give it back. Also the Saramago one with the elephant.",
-      created_at: "2026-10-28T09:44:00",
-      updated_at: "2026-10-31T18:02:00",
-      sync: "synced",
-    },
-    {
-      id: "nt_1018",
-      user_id: "u_8821",
-      title: "Mum's 60th — gift ideas",
-      body: "Shortlist: the Orkney wool blanket (£140), a year of the Hidcote seed club, or National Trust life membership. Dad says no more picture frames. Decide by 12 Dec, the party is on the 20th.",
-      created_at: "2026-10-26T20:30:00",
-      updated_at: "2026-10-30T12:15:00",
-      sync: "synced",
-    },
-  ]);
+  let notes = $state([]);
 
   let query = $state("");
   let composerOpen = $state(false);
@@ -121,26 +32,20 @@
   let draftBody = $state("");
   let formError = $state("");
   let saving = $state(false);
-  let confirmId = $state(null);
   let flash = $state(null);
-  let offline = $state(false);
-  let loading = $state(false);
+  let loading = $state(true);
   let listError = $state("");
-  let deniedNotice = $state(true);
   let signingOut = $state(false);
   let newId = $state(null);
-  let lastSynced = $state("06 NOV 2026 · 09:41");
-  let nextId = $state(1042);
 
   const q = $derived(query.trim().toLowerCase());
-  const sorted = $derived([...notes].sort((a, b) => b.updated_at.localeCompare(a.updated_at)));
+  const sorted = $derived([...notes].sort((a, b) => b.created_at.localeCompare(a.created_at)));
   const results = $derived(
     q ? sorted.filter((n) => (n.title + " " + n.body).toLowerCase().includes(q)) : sorted,
   );
   const totalWords = $derived(
     notes.reduce((sum, n) => sum + n.body.trim().split(/\s+/).filter(Boolean).length, 0),
   );
-  const queuedCount = $derived(notes.filter((n) => n.sync === "queued").length);
   const draftWords = $derived(draftBody.trim().split(/\s+/).filter(Boolean).length);
 
   function pad(n) {
@@ -151,22 +56,6 @@
     const [d, t] = iso.split("T");
     const [y, m, day] = d.split("-");
     return day + " " + MONTHS[Number(m) - 1] + " " + y + " · " + t.slice(0, 5);
-  }
-
-  function localIso(d) {
-    return (
-      d.getFullYear() +
-      "-" +
-      pad(d.getMonth() + 1) +
-      "-" +
-      pad(d.getDate()) +
-      "T" +
-      pad(d.getHours()) +
-      ":" +
-      pad(d.getMinutes()) +
-      ":" +
-      pad(d.getSeconds())
-    );
   }
 
   function snippet(note, needle) {
@@ -208,99 +97,68 @@
     formError = "";
   }
 
-  function saveNote(event) {
-    event.preventDefault();
-    const title = draftTitle.trim();
-    const body = draftBody.trim();
-    if (!title && !body) {
-      formError = "A note needs something in it. Type a title, or a first line of body text.";
-      return;
+  /** A 401 on any notes call means the session is gone: forget it and send the
+   * visitor back to sign in, same as a deliberate sign-out. */
+  function handleUnauthorized() {
+    clearSession();
+    navigate("sign-in");
+  }
+
+  async function loadNotes() {
+    loading = true;
+    listError = "";
+    try {
+      const data = await apiFetch("/api/notes");
+      notes = Array.isArray(data?.notes) ? data.notes : [];
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+      listError = "Could not reach the notes server. Try again.";
+    } finally {
+      loading = false;
     }
-    saving = true;
+  }
+
+  async function saveNote(event) {
+    event.preventDefault();
+    if (saving) return;
     formError = "";
-    setTimeout(() => {
-      const now = new Date();
-      const iso = localIso(now);
-      const firstLine = body.split("\n")[0].trim();
-      const finalTitle =
-        title || (firstLine.length > 62 ? firstLine.slice(0, 62) + "…" : firstLine);
-      const note = {
-        id: "nt_" + nextId,
-        user_id: user.id,
-        title: finalTitle,
-        body: body,
-        created_at: iso,
-        updated_at: iso,
-        sync: offline ? "queued" : "synced",
-      };
-      nextId = nextId + 1;
-      notes = [note, ...notes];
-      newId = note.id;
-      saving = false;
+    saving = true;
+    try {
+      const data = await apiFetch("/api/notes", {
+        method: "POST",
+        body: JSON.stringify({ title: draftTitle.trim(), body: draftBody.trim() }),
+      });
+      notes = [data.note, ...notes];
+      newId = data.note.id;
       composerOpen = false;
       draftTitle = "";
       draftBody = "";
       query = "";
       flash = {
         kind: "success",
-        text: offline
-          ? "Saved on this device. “" + finalTitle + "” uploads as soon as you reconnect."
-          : "Saved. “" + finalTitle + "” is at the top of your list.",
+        text: "Saved. “" + data.note.title + "” is at the top of your list.",
       };
       setTimeout(() => {
-        if (newId === note.id) newId = null;
+        if (newId === data.note.id) newId = null;
       }, 2400);
-    }, 520);
-  }
-
-  function askDelete(id) {
-    confirmId = id;
-    flash = null;
-  }
-
-  function cancelDelete() {
-    const kept = notes.find((n) => n.id === confirmId);
-    confirmId = null;
-    if (kept) flash = { kind: "info", text: "Kept “" + kept.title + "”. Nothing was changed." };
-  }
-
-  function confirmDelete(id) {
-    const gone = notes.find((n) => n.id === id);
-    notes = notes.filter((n) => n.id !== id);
-    confirmId = null;
-    flash = {
-      kind: "success",
-      text: "Deleted “" + gone.title + "”. It is gone from your account for good.",
-    };
-  }
-
-  function reload() {
-    if (loading) return;
-    loading = true;
-    listError = "";
-    flash = null;
-    setTimeout(() => {
-      loading = false;
-      if (offline) {
-        listError =
-          "Could not reach the notes server — you have offline mode switched on. Everything below is the copy saved on this device.";
-      } else {
-        lastSynced = stamp(localIso(new Date()));
-        notes = notes.map((n) => ({ ...n, sync: "synced" }));
-        flash = { kind: "success", text: "List refreshed. This device matches the server." };
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        handleUnauthorized();
+        return;
       }
-    }, 750);
-  }
-
-  function toggleOffline() {
-    offline = !offline;
-    listError = "";
-    flash = {
-      kind: "info",
-      text: offline
-        ? "Offline mode on. New notes queue on this device until you switch it back."
-        : "Back online. Queued notes upload on the next refresh.",
-    };
+      if (err instanceof ApiError && err.status === 422) {
+        formError =
+          (err.body && err.body.message) ||
+          "Enter a title or some body text to save a note.";
+      } else {
+        formError = "Could not save the note. Try again.";
+      }
+    } finally {
+      saving = false;
+    }
   }
 
   async function signOut() {
@@ -315,20 +173,22 @@
     navigate("sign-in");
   }
 
-  function openNote(id) {
+  function openNote() {
     navigate("note");
   }
 
   function onKey(event) {
     if (event.key !== "Escape") return;
-    if (confirmId) {
-      cancelDelete();
-    } else if (composerOpen && !saving) {
+    if (composerOpen && !saving) {
       closeComposer();
     } else if (query) {
       query = "";
     }
   }
+
+  $effect(() => {
+    loadNotes();
+  });
 
   $effect(() => {
     if (composerOpen) {
@@ -345,12 +205,7 @@
     }
   });
 
-  $effect(() => {
-    if (confirmId) {
-      const target = document.querySelector('[data-confirm-delete="' + confirmId + '"]');
-      if (target) target.focus();
-    }
-  });
+
 </script>
 
 <svelte:window onkeydown={onKey} />
@@ -377,7 +232,7 @@
         <div class="flex items-center gap-4">
           <div class="text-right text-[11px] uppercase leading-5 tracking-[0.18em]">
             <p style="color: {brand.neutralColor}">Signed in as</p>
-            <p class="break-all">{user.email}</p>
+            <p class="break-all">{session.user ? session.user.email : ""}</p>
           </div>
           <button
             type="button"
@@ -396,10 +251,6 @@
         class="mt-6 flex flex-wrap items-baseline gap-x-8 gap-y-2 text-[11px] uppercase tracking-[0.18em]"
       >
         <div class="flex gap-2">
-          <dt style="color: {brand.neutralColor}">Today</dt>
-          <dd>06 NOV 2026</dd>
-        </div>
-        <div class="flex gap-2">
           <dt style="color: {brand.neutralColor}">Notes</dt>
           <dd>{pad(notes.length)}</dd>
         </div>
@@ -413,50 +264,6 @@
         </div>
       </dl>
     </header>
-
-    <!-- Permission denied notice -->
-    {#if deniedNotice}
-      <div
-        role="status"
-        class="mt-8 flex items-start gap-4 border-[3px] bg-white p-5"
-        style="border-color: {brand.primaryColor}; box-shadow: 6px 6px 0 {brand.primaryColor};"
-      >
-        <Icon name="AlertCircle" class="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-        <div class="min-w-0 flex-1">
-          <h2 class="text-[11px] uppercase tracking-[0.2em]">Note not opened — it isn’t yours</h2>
-          <p class="mt-2 max-w-[66ch] text-sm leading-relaxed" style="color: {brand.neutralColor}">
-            The link you followed points at note <span style="color: {brand.primaryColor}"
-              >nt_7730</span
-            >, which is stored against another account. Only its owner can open, edit or delete it.
-            Ask them to paste the text to you if you need it.
-          </p>
-        </div>
-        <button
-          type="button"
-          aria-label="Dismiss the note access notice"
-          onclick={() => (deniedNotice = false)}
-          class="inline-flex h-11 w-11 shrink-0 items-center justify-center border-[3px] transition-colors duration-150 hover:bg-[var(--ink)] hover:text-[var(--paper)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
-          style="border-color: {brand.primaryColor}; outline-color: {brand.accentColor};"
-        >
-          <Icon name="X" class="h-4 w-4" aria-hidden="true" />
-        </button>
-      </div>
-    {/if}
-
-    <!-- Stale / offline bar -->
-    {#if offline}
-      <p
-        class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 border-y-[3px] px-1 py-3 text-[11px] uppercase tracking-[0.18em]"
-        style="border-color: {brand.primaryColor}"
-      >
-        <Icon name="Clock" class="h-4 w-4" aria-hidden="true" />
-        <span>Offline copy</span>
-        <span aria-hidden="true" style="color: {brand.neutralColor}">/</span>
-        <span style="color: {brand.neutralColor}">Last synced {lastSynced}</span>
-        <span aria-hidden="true" style="color: {brand.neutralColor}">/</span>
-        <span style="color: {brand.neutralColor}">{queuedCount} waiting to upload</span>
-      </p>
-    {/if}
 
     <div class="mt-10 grid gap-10 lg:grid-cols-3 lg:gap-12">
       <!-- Main column -->
@@ -529,7 +336,7 @@
             {#if q}
               Showing {pad(results.length)} of {pad(notes.length)} — matching “{query.trim()}”
             {:else}
-              Showing all {pad(notes.length)} of your notes, newest edit first
+              Showing all {pad(notes.length)} of your notes, newest first
             {/if}
           </p>
         </section>
@@ -636,7 +443,7 @@
                   class="ml-auto text-[11px] uppercase tracking-[0.18em]"
                   style="color: {brand.neutralColor}"
                 >
-                  {offline ? "Will queue on this device" : "Saves to your account only"}
+                  Saves to your account
                 </span>
               </div>
             </form>
@@ -681,7 +488,7 @@
               § 02 — Your notes
             </h2>
             <p class="text-[11px] uppercase tracking-[0.18em]" style="color: {brand.neutralColor}">
-              Ordered by last edit
+              Ordered newest first
             </p>
           </div>
 
@@ -692,7 +499,7 @@
             >
               <h3 class="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em]">
                 <Icon name="AlertCircle" class="h-4 w-4" aria-hidden="true" />
-                Refresh failed
+                Could not load your notes
               </h3>
               <p
                 class="mt-3 max-w-[66ch] text-sm leading-relaxed"
@@ -702,7 +509,7 @@
               </p>
               <button
                 type="button"
-                onclick={reload}
+                onclick={loadNotes}
                 class="mt-5 inline-flex min-h-[44px] items-center gap-2 border-[3px] px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-colors duration-150 hover:bg-[var(--ink)] hover:text-[var(--paper)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
                 style="border-color: {brand.primaryColor}; outline-color: {brand.accentColor};"
               >
@@ -881,17 +688,6 @@
                         <span style="color: {brand.neutralColor}"
                           >Created {stamp(note.created_at)}</span
                         >
-                        <span
-                          class="inline-flex items-center gap-1.5 border-[3px] px-2 py-1"
-                          style="border-color: {brand.primaryColor}"
-                        >
-                          <Icon
-                            name={note.sync === "queued" ? "Clock" : "Check"}
-                            class="h-3 w-3"
-                            aria-hidden="true"
-                          />
-                          {note.sync === "queued" ? "Queued" : "Synced"}
-                        </span>
                       </p>
                     </div>
 
@@ -905,52 +701,8 @@
                         Open
                         <Icon name="ChevronRight" class="h-4 w-4" aria-hidden="true" />
                       </button>
-                      <button
-                        type="button"
-                        aria-label={"Delete note: " + note.title}
-                        title={"Delete note: " + note.title}
-                        onclick={() => askDelete(note.id)}
-                        class="inline-flex h-11 w-11 items-center justify-center border-[3px] transition-colors duration-150 hover:bg-[var(--ink)] hover:text-[var(--paper)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
-                        style="border-color: {brand.primaryColor}; outline-color: {brand.accentColor};"
-                      >
-                        <Icon name="Trash" class="h-4 w-4" aria-hidden="true" />
-                      </button>
                     </div>
                   </div>
-
-                  {#if confirmId === note.id}
-                    <div
-                      role="alertdialog"
-                      aria-label={"Confirm deleting " + note.title}
-                      class="flex flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between"
-                      style="background-color: {brand.primaryColor}; color: {brand.backgroundColor};"
-                    >
-                      <p class="max-w-[60ch] text-sm leading-relaxed">
-                        Delete “{note.title}” for good? The text and both timestamps go with it, and
-                        there is no undo.
-                      </p>
-                      <div class="flex shrink-0 flex-wrap gap-3">
-                        <button
-                          type="button"
-                          data-confirm-delete={note.id}
-                          onclick={() => confirmDelete(note.id)}
-                          class="inline-flex min-h-[44px] items-center gap-2 border-[3px] px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                          style="border-color: {brand.backgroundColor}; background-color: {brand.backgroundColor}; color: {brand.primaryColor}; outline-color: {brand.backgroundColor};"
-                        >
-                          <Icon name="Trash" class="h-4 w-4" aria-hidden="true" />
-                          Delete permanently
-                        </button>
-                        <button
-                          type="button"
-                          onclick={cancelDelete}
-                          class="inline-flex min-h-[44px] items-center px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                          style="color: {brand.backgroundColor}; outline-color: {brand.backgroundColor};"
-                        >
-                          Keep it
-                        </button>
-                      </div>
-                    </div>
-                  {/if}
                 </li>
               {/each}
             </ol>
@@ -966,25 +718,13 @@
 
         <div class="mt-4 border-[3px] bg-white" style="border-color: {brand.primaryColor}">
           <div class="border-b-[3px] p-5" style="border-color: {brand.primaryColor}">
-            <Stat
-              label="Notes kept"
-              value={pad(notes.length)}
-              hint={queuedCount > 0 ? queuedCount + " waiting to upload" : "All uploaded"}
-              class="[&_*]:tracking-normal"
-            />
+            <Stat label="Notes kept" value={pad(notes.length)} hint="All saved to your account" />
           </div>
-          <div class="border-b-[3px] p-5" style="border-color: {brand.primaryColor}">
+          <div class="p-5">
             <Stat
               label="Words written"
               value={totalWords.toLocaleString("en-GB")}
               hint="Across every note"
-            />
-          </div>
-          <div class="p-5">
-            <Stat
-              label="Last synced"
-              value={lastSynced}
-              hint={offline ? "Offline mode is on" : "Up to date"}
             />
           </div>
         </div>
@@ -996,43 +736,19 @@
           </h3>
           <p class="mt-3 text-sm leading-relaxed" style="color: {brand.neutralColor}">
             Every note here is stored against <span style="color: {brand.primaryColor}"
-              >{user.email}</span
+              >{session.user ? session.user.email : ""}</span
             >. Listing, searching and opening all run inside your account — nobody else’s notes can
             appear in your results, and yours never appear in theirs.
-          </p>
-          <p
-            class="mt-4 text-[11px] uppercase tracking-[0.18em]"
-            style="color: {brand.neutralColor}"
-          >
-            Member since {stamp(user.created_at).slice(0, 11)}
           </p>
         </div>
 
         <div class="mt-6 border-[3px] p-5" style="border-color: {brand.primaryColor}">
           <h3 class="text-[11px] uppercase tracking-[0.2em]">Connection</h3>
-          <div class="mt-4 flex items-center justify-between gap-4">
-            <span class="text-sm" style="color: {brand.neutralColor}">Work offline</span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={offline}
-              onclick={toggleOffline}
-              class="inline-flex min-h-[44px] items-center gap-2 border-[3px] px-3 py-2 text-[11px] uppercase tracking-[0.2em] transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
-              style="border-color: {brand.primaryColor}; background-color: {offline
-                ? brand.primaryColor
-                : 'transparent'}; color: {offline
-                ? brand.backgroundColor
-                : brand.primaryColor}; outline-color: {brand.accentColor};"
-            >
-              <Icon name={offline ? "Check" : "X"} class="h-3.5 w-3.5" aria-hidden="true" />
-              {offline ? "On" : "Off"}
-            </button>
-          </div>
           <button
             type="button"
-            onclick={reload}
+            onclick={loadNotes}
             disabled={loading}
-            class="mt-5 inline-flex min-h-[44px] w-full items-center justify-center gap-2 border-[3px] px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-colors duration-150 hover:bg-[var(--ink)] hover:text-[var(--paper)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60 motion-reduce:transition-none"
+            class="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 border-[3px] px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-colors duration-150 hover:bg-[var(--ink)] hover:text-[var(--paper)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60 motion-reduce:transition-none"
             style="border-color: {brand.primaryColor}; outline-color: {brand.accentColor};"
           >
             <Icon name="Upload" class="h-4 w-4" aria-hidden="true" />
@@ -1044,7 +760,7 @@
           class="mt-6 border-t-[3px] pt-4 text-[11px] uppercase leading-5 tracking-[0.18em]"
           style="border-color: {brand.primaryColor}; color: {brand.neutralColor}"
         >
-          Esc clears the search, closes the editor and cancels a delete.
+          Esc clears the search and closes the editor.
         </p>
       </aside>
     </div>
