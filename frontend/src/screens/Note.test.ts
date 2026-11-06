@@ -182,4 +182,23 @@ describe("Note", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(screen.getByText("Grocery list")).toBeInTheDocument();
   });
+
+  it("[AC-024] viewing, editing and deleting a note never shows a payment or upgrade prompt", async () => {
+    mockedApiFetch.mockResolvedValueOnce({ note: NOTE });
+    render(Note);
+    await screen.findByText("Grocery list");
+
+    expect(screen.queryByLabelText(/card number/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /subscribe|upgrade|add payment/i }),
+    ).not.toBeInTheDocument();
+
+    await fireEvent.click(screen.getByRole("button", { name: /edit note/i }));
+    expect(screen.queryByText(/credit card|billing details|free trial/i)).not.toBeInTheDocument();
+    await fireEvent.click(screen.getByRole("button", { name: /^cancel$/i }));
+
+    await fireEvent.click(screen.getByRole("button", { name: /^delete$/i }));
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog).not.toHaveTextContent(/payment|billing|subscription|upgrade/i);
+  });
 });
