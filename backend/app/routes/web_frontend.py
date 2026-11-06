@@ -11,8 +11,15 @@ from flask import Blueprint, jsonify, request
 from flask_login import current_user, login_required
 
 from app.database import SessionLocal
-from app.services.notes_service import EmptyNoteError, create_note, list_notes, serialize_note
-from app.stubs import not_implemented
+from app.services.notes_service import (
+    EmptyNoteError,
+    create_note,
+    delete_note,
+    get_note,
+    list_notes,
+    serialize_note,
+    update_note,
+)
 
 bp = Blueprint("web_frontend", __name__)
 
@@ -54,18 +61,49 @@ def post_api_notes() -> dict[str, object]:
 
 
 @bp.route("/api/notes/<id>", methods=["GET"])
-def get_api_notes_by_id(id: str) -> dict[str, str]:
+@login_required
+def get_api_notes_by_id(id: str) -> tuple[dict[str, object], int]:
     """Return a single note with full body and timestamps only if it belongs to the current user."""
-    return not_implemented("GET /api/notes/{id}")
+    with SessionLocal() as session:
+        note = get_note(session, current_user.id, id)
+        if note is None:
+            return jsonify({"error": "not_found", "message": "Note not found."}), 404
+        return jsonify({"note": serialize_note(note)}), 200
 
 
 @bp.route("/api/notes/<id>", methods=["PUT"])
-def put_api_notes_by_id(id: str) -> dict[str, str]:
+@login_required
+def put_api_notes_by_id(id: str) -> tuple[dict[str, object], int]:
     """Update title/body of the user's own note and set updated_at; reject if both become empty."""
-    return not_implemented("PUT /api/notes/{id}")
+    data = request.get_json(silent=True) or {}
+    title = data.get("title")
+    body = data.get("body")
+
+    with SessionLocal() as session:
+        try:
+            note = update_note(session, current_user.id, id, title, body)
+        except EmptyNoteError:
+            return (
+                jsonify(
+                    {
+                        "error": "empty_note",
+                        "message": "Enter a title or some body text to save a note.",
+                    }
+                ),
+                422,
+            )
+
+        if note is None:
+            return jsonify({"error": "not_found", "message": "Note not found."}), 404
+        return jsonify({"note": serialize_note(note)}), 200
 
 
 @bp.route("/api/notes/<id>", methods=["DELETE"])
-def delete_api_notes_by_id(id: str) -> dict[str, str]:
+@login_required
+def delete_api_notes_by_id(id: str) -> tuple[dict[str, object] | str, int]:
     """Permanently delete the user's own note."""
-    return not_implemented("DELETE /api/notes/{id}")
+    with SessionLocal() as session:
+        deleted = delete_note(session, current_user.id, id)
+        if not deleted:
+            return jsonify({"error": "not_found", "message": "Note not found."}), 404
+        return "", 204

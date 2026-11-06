@@ -172,8 +172,8 @@
     navigate("sign-in");
   }
 
-  function openNote() {
-    navigate("note");
+  function openNote(note) {
+    navigate("note/" + note.id);
   }
 
   function onKey(event) {
@@ -647,7 +647,7 @@
                       <h3 class="text-2xl leading-tight" style="font-family: {brand.fontHeading}">
                         <button
                           type="button"
-                          onclick={openNote}
+                          onclick={() => openNote(note)}
                           class="text-left underline-offset-[6px] transition-colors duration-150 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
                           style="outline-color: {brand.accentColor};"
                         >
@@ -691,7 +691,7 @@
                     <div class="flex shrink-0 items-center gap-3">
                       <button
                         type="button"
-                        onclick={openNote}
+                        onclick={() => openNote(note)}
                         class="inline-flex min-h-[44px] items-center gap-2 border-[3px] px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-colors duration-150 hover:bg-[var(--ink)] hover:text-[var(--paper)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
                         style="border-color: {brand.primaryColor}; outline-color: {brand.accentColor};"
                       >
