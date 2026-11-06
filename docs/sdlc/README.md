@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 build simple note pad
 
-**Documentation version:** v6
+**Documentation version:** v7
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -31,7 +31,7 @@ build simple note pad
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 11 requirements |
-| [Changelog](CHANGELOG.md) | 6 versions |
+| [Changelog](CHANGELOG.md) | 7 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -61,10 +61,9 @@ build simple note pad
 
 ### Testing
 
-- No ticket ID associated with this check run, so it cannot be linked to a specific development item.
-- No breakdown of what the 4 checks actually verified (e.g. unit, integration, UI) -- only an aggregate pass count was given.
-- No mapping provided between these checks and any of the known requirements (US-001 through US-011), so requirement-level test coverage cannot be confirmed or documented.
-- No test plan or test case documentation was supplied for this phase.
+- Testing phase has not started, or its records were not provided -- no test plan, test cases, execution results, or defect data available.
+- Cannot trace test coverage back to requirements US-001 through US-011 due to absence of testing input.
+- No QA sign-off or approval status is available for this phase.
 
 ### Deployment
 
