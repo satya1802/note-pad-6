@@ -63,4 +63,24 @@ describe("Register", () => {
 
     expect(await screen.findByText("Email format is invalid.")).toBeInTheDocument();
   });
+
+  it("[AC-024] registering never shows a payment prompt, card field or upgrade offer", async () => {
+    mockedApiFetch.mockResolvedValueOnce({ user: { id: "u_1", email: "new@example.com" } });
+    render(Register);
+
+    // Before submitting: no card field, no upgrade copy, on the form itself.
+    expect(screen.queryByLabelText(/card number/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/credit card|subscription|upgrade to/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/free, always/i)).toBeInTheDocument();
+
+    await fillAndSubmit("new@example.com", "correct-horse");
+    await screen.findByRole("status");
+
+    // After the account is created: same again, on the confirmation screen.
+    expect(screen.queryByLabelText(/card number/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /subscribe|upgrade|add payment/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/credit card|billing details/i)).not.toBeInTheDocument();
+  });
 });

@@ -54,4 +54,24 @@ describe("SignIn", () => {
     expect(screen.queryByText(/demo account/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/fill these in for me/i)).not.toBeInTheDocument();
   });
+
+  it("[AC-024] signing in asks only for email and password, never payment or billing details", async () => {
+    mockedApiFetch.mockResolvedValueOnce({ user: { id: "u_1", email: "reader@example.com" } });
+    render(SignIn);
+
+    expect(screen.queryByLabelText(/card number/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/credit card|free trial|subscribe now/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /subscribe|upgrade|add payment/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/no payment is ever asked for/i)).toBeInTheDocument();
+
+    await fillAndSubmit("reader@example.com", "correct-horse");
+    await screen.findByText(/session started/i);
+
+    expect(screen.queryByLabelText(/card number/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /subscribe|upgrade|add payment/i }),
+    ).not.toBeInTheDocument();
+  });
 });

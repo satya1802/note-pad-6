@@ -231,6 +231,24 @@ describe("Notes", () => {
     expect(screen.queryByText(/nothing filed yet/i)).not.toBeInTheDocument();
   });
 
+  it("[AC-024] the notes list and the new-note form never show a payment or upgrade prompt", async () => {
+    setUser();
+    mockedApiFetch.mockResolvedValueOnce({ notes: [] });
+    render(Notes);
+    await waitFor(() => expect(mockedApiFetch).toHaveBeenCalledWith("/api/notes"));
+
+    expect(screen.getByText(/free — no billing, ever/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/card number/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /subscribe|upgrade|add payment/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/credit card|free trial|payment method/i)).not.toBeInTheDocument();
+
+    await fireEvent.click(screen.getByRole("button", { name: /write a new note/i }));
+    expect(screen.queryByLabelText(/card number/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/credit card|upgrade to/i)).not.toBeInTheDocument();
+  });
+
   it("[AC] redirects to sign-in on a 401 returned from a search request", async () => {
     setUser();
     const note = {
