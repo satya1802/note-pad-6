@@ -108,3 +108,30 @@ def test_ac007_me_returns_401_without_active_session() -> None:
     response = client.get("/api/auth/me")
 
     assert response.status_code == 401
+
+
+def test_ac002_register_duplicate_email_is_detected_case_insensitively() -> None:
+    """`users.email` is `citext`: "A@Example.com" and "a@example.com" are the same
+    account, so registering the second must 409 rather than create a sibling row."""
+    client = _client()
+    base = f"CaseFold-{uuid.uuid4()}@Example.COM"
+    client.post("/api/auth/register", json={"email": base, "password": MIN_PASSWORD})
+
+    response = client.post(
+        "/api/auth/register", json={"email": base.lower(), "password": MIN_PASSWORD}
+    )
+
+    assert response.status_code == 409
+
+
+def test_ac004_login_matches_email_regardless_of_case() -> None:
+    client = _client()
+    base = f"CaseFold-{uuid.uuid4()}@Example.COM"
+    client.post("/api/auth/register", json={"email": base, "password": MIN_PASSWORD})
+    client.post("/api/auth/logout")
+
+    response = client.post(
+        "/api/auth/login", json={"email": base.lower(), "password": MIN_PASSWORD}
+    )
+
+    assert response.status_code == 200
