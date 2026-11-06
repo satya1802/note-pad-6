@@ -151,8 +151,7 @@
       }
       if (err instanceof ApiError && err.status === 422) {
         formError =
-          (err.body && err.body.message) ||
-          "Enter a title or some body text to save a note.";
+          (err.body && err.body.message) || "Enter a title or some body text to save a note.";
       } else {
         formError = "Could not save the note. Try again.";
       }
@@ -204,8 +203,6 @@
       composerIn = false;
     }
   });
-
-
 </script>
 
 <svelte:window onkeydown={onKey} />
@@ -650,7 +647,7 @@
                       <h3 class="text-2xl leading-tight" style="font-family: {brand.fontHeading}">
                         <button
                           type="button"
-                          onclick={() => openNote(note.id)}
+                          onclick={openNote}
                           class="text-left underline-offset-[6px] transition-colors duration-150 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
                           style="outline-color: {brand.accentColor};"
                         >
@@ -694,7 +691,7 @@
                     <div class="flex shrink-0 items-center gap-3">
                       <button
                         type="button"
-                        onclick={() => openNote(note.id)}
+                        onclick={openNote}
                         class="inline-flex min-h-[44px] items-center gap-2 border-[3px] px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-colors duration-150 hover:bg-[var(--ink)] hover:text-[var(--paper)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
                         style="border-color: {brand.primaryColor}; outline-color: {brand.accentColor};"
                       >
