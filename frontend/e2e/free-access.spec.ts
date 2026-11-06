@@ -143,9 +143,10 @@ async function runFreeAccessFlow(page: Page, tag: string): Promise<void> {
   await expect(page).not.toHaveURL(/billing|checkout|upgrade|subscribe|payment/i);
 
   const toProvider = outboundRequests.filter((url) => PAYMENT_PROVIDER_RE.test(url));
-  expect(toProvider, `unexpected outbound navigation to a payment provider: ${toProvider.join(", ")}`).toHaveLength(
-    0,
-  );
+  expect(
+    toProvider,
+    `unexpected outbound navigation to a payment provider: ${toProvider.join(", ")}`,
+  ).toHaveLength(0);
 }
 
 test("[AC-024] registration, sign-in and every note feature never ask for payment — mobile viewport", async ({
