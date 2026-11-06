@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 build simple note pad
 
-**Documentation version:** v3
+**Documentation version:** v4
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -15,7 +15,7 @@ build simple note pad
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 7 entries |
-| [Development](development/README.md) | 8 entries |
+| [Development](development/README.md) | 6 entries |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
@@ -24,14 +24,14 @@ build simple note pad
 | [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
 | [Sprint plan](development/sprint-plan.md) | 3 sprints |
 | [Developer guide](development/developer-guide.md) | generated |
-| [API reference](development/api-reference.md) | 1 route |
+| [API reference](development/api-reference.md) | 10 routes |
 | [Test report](testing/test-report.md) | not run yet |
-| [Tests](testing/test-cases.md) | 0 tests |
+| [Tests](testing/test-cases.md) | 33 tests |
 | [Deployment guide](deployment/deployment-guide.md) | not deployed yet |
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 11 requirements |
-| [Changelog](CHANGELOG.md) | 3 versions |
+| [Changelog](CHANGELOG.md) | 4 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -50,23 +50,11 @@ build simple note pad
 
 ### Development
 
-- No sprint start/end dates provided.
-- No execution status (in-progress/done, commits, PRs, test results) provided for any backlog item -- only the approved plan and backlog assignments are known.
-- Input does not explicitly map backlog items to sprints; mapping used in sprint entries below is inferred from matching sprint goal text and point totals to item titles, and should be confirmed.
-- Item-to-sprint assignment is inferred from goal wording and point-total match, not explicitly stated in the input.
-- No status reported on whether these items were completed within the sprint.
-- Item-to-sprint assignment is inferred from goal wording, not explicitly stated in the input.
-- Point total (18) does not fully match the 20-point capacity; unclear whether unlisted work fills the remainder or this is planned slack.
-- No status reported on completion of these items.
-- Point total (4) is far below the 20-point capacity; unclear if additional hardening work (not itemized in the input) is planned to fill this sprint.
-- No acceptance criteria, design, or implementation detail provided beyond story titles, points, and assigned role.
-- No completion status reported for any child story.
-- Task-level point estimates not provided for US-004-T1/T2/T3.
-- No completion status, code artifacts, or test results reported for any item in this epic.
-- No completion status reported for either story.
-- No detail on search implementation (e.g. scope, indexing, match behavior) beyond the story title.
-- No completion status, security review findings, or QA test results reported despite security-agent and qa-agent role assignments.
-- No detail on what 'per-user privacy across all endpoints' or 'free of any payment prompts' specifically entails beyond the Sprint 3 goal statement.
+- EPIC-001 through EPIC-004 carry no points and no assigned role, consistent with their role as organizing epics rather than directly estimated work items; confirm this is intentional.
+- No individual delivery/commit confirmation was given for sub-tasks US-004-T1, US-004-T2, US-004-T3 separately from the parent story US-004.
+- Discrepancy: run status says 'completed' but no delivery evidence (ticket status or commit) exists for US-005 through US-011 -- confirm whether these were actually completed, are still in progress, or the run status label is inaccurate.
+- Sprint 2 scope (note view/edit/delete, notes list, search) has no recorded ticket outcomes.
+- Sprint 3 scope (per-user privacy hardening, confirming no payment prompts) has no recorded ticket outcomes.
 
 ### Testing
 
