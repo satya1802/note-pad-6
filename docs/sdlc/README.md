@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 build simple note pad
 
-**Documentation version:** v8
+**Documentation version:** v9
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -16,7 +16,7 @@ build simple note pad
 | [Requirements](requirements/README.md) | v1 approved |
 | [Architecture](architecture/README.md) | 7 entries |
 | [Development](development/README.md) | 8 entries |
-| [Testing](testing/README.md) | 1 entry |
+| [Testing](testing/README.md) | 2 entries |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
 | [Data model](architecture/data-model.md) | generated |
@@ -31,7 +31,7 @@ build simple note pad
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 11 requirements |
-| [Changelog](CHANGELOG.md) | 8 versions |
+| [Changelog](CHANGELOG.md) | 9 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -59,9 +59,11 @@ build simple note pad
 
 ### Testing
 
-- Testing phase has not started, or its records were not provided -- no test plan, test cases, execution results, or defect data available.
-- Cannot trace test coverage back to requirements US-001 through US-011 due to absence of testing input.
-- No QA sign-off or approval status is available for this phase.
+- Input does not identify which four checks were run or what functionality/requirement each check covers.
+- No requirement keys (US-001–US-011) are linked to this check run in the provided input.
+- The write_tests input text was truncated after describing the first Playwright spec ('a full browser walk...'); content of the second mentioned spec is unknown.
+- No explicit requirement key (US-001–US-011) is cited as the source of AC-024 in the provided input, so this test effort cannot be definitively traced to one of the known requirements.
+- No pass/fail results for the newly written tests were provided -- only that the write_tests ticket itself succeeded (i.e., the tests were authored), not that they were run and passed.
 
 ### Deployment
 
