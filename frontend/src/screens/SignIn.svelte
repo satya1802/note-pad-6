@@ -163,7 +163,7 @@
 
         <!-- Signature: notepad margin rule down the facts list -->
         <ol class="mt-10 border-l-[3px] pl-6" style="border-color: {brand.accentColor};">
-          {#each facts as fact, i}
+          {#each facts as fact, i (fact.n)}
             <li class="py-5 {i === 0 ? '' : 'border-t border-dashed'}" style="border-color: {brand.neutralColor};">
               <div class="flex gap-5">
                 <span

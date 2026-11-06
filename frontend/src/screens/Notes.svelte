@@ -739,7 +739,7 @@
                           class="text-left underline-offset-[6px] transition-colors duration-150 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
                           style="outline-color: {brand.accentColor};"
                         >
-                          {#each parts(note.title, q) as piece}
+                          {#each parts(note.title, q) as piece, pi (pi)}
                             {#if piece.hit}
                               <mark style="background-color: {brand.accentColor}; color: #ffffff; padding: 0 2px;">{piece.t}</mark>
                             {:else}{piece.t}{/if}
@@ -748,7 +748,7 @@
                       </h3>
 
                       <p class="mt-2 max-w-[72ch] text-sm leading-relaxed" style="color: {brand.neutralColor}">
-                        {#each parts(snippet(note, q), q) as piece}
+                        {#each parts(snippet(note, q), q) as piece, pi (pi)}
                           {#if piece.hit}
                             <mark style="background-color: {brand.accentColor}; color: #ffffff; padding: 0 2px;">{piece.t}</mark>
                           {:else}{piece.t}{/if}
