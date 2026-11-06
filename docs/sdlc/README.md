@@ -5,7 +5,7 @@
 <!-- sdlc:auto:start overview -->
 build simple note pad
 
-**Documentation version:** v1
+**Documentation version:** v2
 <!-- sdlc:auto:end overview -->
 
 ## Contents
@@ -14,14 +14,14 @@ build simple note pad
 | Document | State |
 |---|---|
 | [Requirements](requirements/README.md) | v1 approved |
-| [Architecture](architecture/README.md) | 1 entry |
+| [Architecture](architecture/README.md) | 7 entries |
 | [Development](development/README.md) | 1 entry |
 | [Testing](testing/README.md) | 1 entry |
 | [Deployment](deployment/README.md) | 1 entry |
 | [Maintenance](maintenance/README.md) | 1 entry |
-| [Data model](architecture/data-model.md) | not generated yet |
-| [API (OpenAPI)](architecture/api/openapi.yaml) | not generated yet |
-| [Decisions (ADRs)](architecture/adr/README.md) | 0 decisions |
+| [Data model](architecture/data-model.md) | generated |
+| [API (OpenAPI)](architecture/api/openapi.yaml) | generated |
+| [Decisions (ADRs)](architecture/adr/README.md) | 4 decisions |
 | [Sprint plan](development/sprint-plan.md) | not generated yet |
 | [Developer guide](development/developer-guide.md) | not generated yet |
 | [API reference](development/api-reference.md) | 0 routes |
@@ -31,7 +31,7 @@ build simple note pad
 | [Runbook](deployment/runbook.md) | not deployed yet |
 | [Release notes](deployment/release-notes.md) | 0 releases |
 | [Traceability matrix](traceability-matrix.md) | 11 requirements |
-| [Changelog](CHANGELOG.md) | 1 version |
+| [Changelog](CHANGELOG.md) | 2 versions |
 <!-- sdlc:auto:end contents -->
 
 ## Open gaps
@@ -44,8 +44,9 @@ build simple note pad
 
 ### Architecture
 
-- No architecture/design documentation exists yet for how the approved stack will implement the 11 user stories and 6 NFRs.
-- No app design screens were provided, which also blocks producing the user_guide section.
+- Input does not map these critical paths to specific requirement IDs (US-001..US-011), so explicit traceability links could not be made.
+- Choice between Amplify/S3+CloudFront for the static site and between App Runner/Elastic Beanstalk for the API is left open (both alternatives listed without a final pick).
+- NFR-004 is referenced by the architecture input but is not among the known requirement keys (US-001..US-011) provided for this project, so its traceability back to a formal requirement record could not be confirmed.
 
 ### Development
 

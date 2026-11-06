@@ -2,6 +2,206 @@
 openapi: 3.1.0
 info:
   title: note pad 6
-  version: architecture-v0
+  version: architecture-v1
   description: Designed API from the approved architecture (not extracted from code).
-paths: {}
+paths:
+  /api/auth/login:
+    post:
+      summary: Authenticate email and password and start a web-managed session.
+      description: Authenticate email and password and start a web-managed session.
+      operationId: post_api_auth_login
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{ email, password }'
+      responses:
+        '200':
+          description: '200 { user: { id, email } } | 401 generic error'
+  /api/auth/logout:
+    post:
+      summary: End the current session.
+      description: End the current session.
+      operationId: post_api_auth_logout
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: empty
+      responses:
+        '200':
+          description: '204'
+      security:
+      - bearerAuth: []
+  /api/auth/me:
+    get:
+      summary: Return the current signed-in user or unauthenticated.
+      description: Return the current signed-in user or unauthenticated.
+      operationId: get_api_auth_me
+      parameters: []
+      responses:
+        '200':
+          description: 200 { user } | 401
+      security:
+      - bearerAuth: []
+  /api/auth/register:
+    post:
+      summary: Create an account from email and password, validating format/uniqueness,
+        then start a session.
+      description: Create an account from email and password, validating format/uniqueness,
+        then start a session.
+      operationId: post_api_auth_register
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{ email, password }'
+      responses:
+        '200':
+          description: '201 { user: { id, email } } | 400 field errors | 409 email
+            in use'
+  /api/notes:
+    get:
+      summary: List the current user's notes ordered by updated_at desc; when q is
+        present, full-text search title and body of only the
+      description: List the current user's notes ordered by updated_at desc; when
+        q is present, full-text search title and body of only the user's notes.
+      operationId: get_api_notes
+      parameters: []
+      responses:
+        '200':
+          description: '200 { notes: [ { id, title, updated_at } ] }'
+      security:
+      - bearerAuth: []
+    post:
+      summary: Create a note for the current user; derive title from first body line
+        if blank and reject a fully empty note.
+      description: Create a note for the current user; derive title from first body
+        line if blank and reject a fully empty note.
+      operationId: post_api_notes
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{ title?, body }'
+      responses:
+        '200':
+          description: 201 { note } | 400 empty note | 401
+      security:
+      - bearerAuth: []
+  /api/notes/{id}:
+    get:
+      summary: Return a single note with full body and timestamps only if it belongs
+        to the current user.
+      description: Return a single note with full body and timestamps only if it belongs
+        to the current user.
+      operationId: get_api_notes_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 200 { note } | 403/404 if not owned
+      security:
+      - bearerAuth: []
+    put:
+      summary: Update title/body of the user's own note and set updated_at; reject
+        if both become empty.
+      description: Update title/body of the user's own note and set updated_at; reject
+        if both become empty.
+      operationId: put_api_notes_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: '{ title?, body? }'
+      responses:
+        '200':
+          description: 200 { note } | 400 empty | 403/404
+      security:
+      - bearerAuth: []
+    delete:
+      summary: Permanently delete the user's own note.
+      description: Permanently delete the user's own note.
+      operationId: delete_api_notes_id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 204 | 403/404
+      security:
+      - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    users:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        password_hash:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - email
+      - password_hash
+      - created_at
+    notes:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        body:
+          type: string
+        search_tsv:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - user_id
+      - title
+      - body
+      - created_at
+      - updated_at
