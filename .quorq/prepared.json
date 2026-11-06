@@ -1,0 +1,26 @@
+{
+  "key": {
+    "app_design_id": "d7eecc04-fe74-47b0-b17c-49b9fbaf95be",
+    "app_design_version": 1,
+    "architecture_document_id": "d83b6a61-a93a-4a5a-b242-47d3f8c02470",
+    "architecture_version": 1
+  },
+  "outcome": "prepared",
+  "packages": [
+    {
+      "ecosystem": "pypi",
+      "installed_version": "0.6.3",
+      "name": "Flask-Login",
+      "status": "installed",
+      "version": ""
+    },
+    {
+      "ecosystem": "pypi",
+      "installed_version": "2.3.0",
+      "name": "email-validator",
+      "status": "installed",
+      "version": ""
+    }
+  ],
+  "prepared_by_run": "ef9b7259-fcb9-43f4-9fc4-a183db1a667c"
+}
