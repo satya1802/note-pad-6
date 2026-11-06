@@ -1,10 +1,7 @@
-"""Views for Svelte Notes Web App.
+"""Views for notes: list/search, create, read, update, and delete.
 
-Responsive browser UI for registration, sign-in/out, notes list, note
-view/create/edit/delete, and search. Calls the backend JSON API and renders results.
-
-Every view is a stub returning a placeholder. The shape comes from the approved
-API spec; the behaviour does not exist yet.
+Translates HTTP to calls into `app.services.notes_service`; the business logic
+lives there, not here.
 """
 
 from flask import Blueprint, jsonify, request
@@ -22,6 +19,22 @@ from app.services.notes_service import (
 )
 
 bp = Blueprint("web_frontend", __name__)
+
+
+def _empty_note_response() -> tuple[dict[str, object], int]:
+    return (
+        jsonify(
+            {
+                "error": "empty_note",
+                "message": "Enter a title or some body text to save a note.",
+            }
+        ),
+        422,
+    )
+
+
+def _not_found_response() -> tuple[dict[str, object], int]:
+    return jsonify({"error": "not_found", "message": "Note not found."}), 404
 
 
 @bp.route("/api/notes", methods=["GET"])
@@ -48,15 +61,7 @@ def post_api_notes() -> dict[str, object]:
         try:
             note = create_note(session, current_user.id, title, body)
         except EmptyNoteError:
-            return (
-                jsonify(
-                    {
-                        "error": "empty_note",
-                        "message": "Enter a title or some body text to save a note.",
-                    }
-                ),
-                422,
-            )
+            return _empty_note_response()
 
         return jsonify({"note": serialize_note(note)}), 201
 
@@ -68,7 +73,7 @@ def get_api_notes_by_id(id: str) -> tuple[dict[str, object], int]:
     with SessionLocal() as session:
         note = get_note(session, current_user.id, id)
         if note is None:
-            return jsonify({"error": "not_found", "message": "Note not found."}), 404
+            return _not_found_response()
         return jsonify({"note": serialize_note(note)}), 200
 
 
@@ -84,18 +89,10 @@ def put_api_notes_by_id(id: str) -> tuple[dict[str, object], int]:
         try:
             note = update_note(session, current_user.id, id, title, body)
         except EmptyNoteError:
-            return (
-                jsonify(
-                    {
-                        "error": "empty_note",
-                        "message": "Enter a title or some body text to save a note.",
-                    }
-                ),
-                422,
-            )
+            return _empty_note_response()
 
         if note is None:
-            return jsonify({"error": "not_found", "message": "Note not found."}), 404
+            return _not_found_response()
         return jsonify({"note": serialize_note(note)}), 200
 
 
@@ -106,5 +103,5 @@ def delete_api_notes_by_id(id: str) -> tuple[dict[str, object] | str, int]:
     with SessionLocal() as session:
         deleted = delete_note(session, current_user.id, id)
         if not deleted:
-            return jsonify({"error": "not_found", "message": "Note not found."}), 404
+            return _not_found_response()
         return "", 204
