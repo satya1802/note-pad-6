@@ -1,0 +1,14 @@
+Flask~=3.0.0
+flask-cors==5.0.0
+sqlalchemy==2.0.35
+gunicorn==23.0.0
+psycopg[binary]==3.2.3
+
+# Checks. The platform installs and runs this file before it reports that the
+# generated tests pass, so the test dependencies belong here rather than in a
+# second file nobody installs.
+pytest>=8.3
+# Coverage for the sprint's unit-test check, reported as JSON the platform reads
+# back to show on the development dashboard.
+pytest-cov>=5.0
+ruff>=0.6
