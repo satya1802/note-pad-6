@@ -24,12 +24,25 @@ export function go(path: string, replace = false): void {
   location.path = path;
 }
 
+function segments(pattern: string, path: string): [string[], string[]] {
+  return [pattern.split("/").filter(Boolean), path.split("/").filter(Boolean)];
+}
+
 /** Whether `path` fits `pattern` (`/orders/:id` fits `/orders/7`). */
 export function matches(pattern: string, path: string): boolean {
-  const want = pattern.split("/").filter(Boolean);
-  const have = path.split("/").filter(Boolean);
+  const [want, have] = segments(pattern, path);
   return (
     want.length === have.length &&
     want.every((segment, index) => segment.startsWith(":") || segment === have[index])
   );
+}
+
+/** The value `path` carries for `:name` in `pattern` (`/notes/:id`, `/notes/7` -> `"7"`). */
+export function param(pattern: string, path: string, name: string): string | undefined {
+  const [want, have] = segments(pattern, path);
+  if (want.length !== have.length) return undefined;
+  for (let i = 0; i < want.length; i++) {
+    if (want[i] === `:${name}`) return have[i];
+  }
+  return undefined;
 }

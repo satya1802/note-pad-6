@@ -11,7 +11,7 @@
     { path: "/register", component: Register, bare: true },
     { path: "/sign-in", component: SignIn, bare: true },
     { path: "/notes", component: Notes },
-    { path: "/note", component: Note },
+    { path: "/note/:id", component: Note },
   ];
   // Where an unknown path lands.
   export const fallback = "/sign-in";
@@ -67,9 +67,6 @@
       <nav aria-label="App menu" class="flex flex-col gap-1">
         <a href="/notes" class={linkClass("/notes")} onclick={(event) => follow(event, "/notes")}>
           My notes
-        </a>
-        <a href="/note" class={linkClass("/note")} onclick={(event) => follow(event, "/note")}>
-          Note
         </a>
       </nav>
     </aside>

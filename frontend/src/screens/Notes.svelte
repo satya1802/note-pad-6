@@ -37,15 +37,16 @@
   let listError = $state("");
   let signingOut = $state(false);
   let newId = $state(null);
+  // The term the list on screen was actually fetched with (as opposed to `query`,
+  // which can be ahead of it mid-debounce). Tells "no notes at all" (AC-018) apart
+  // from "this search matched nothing" (AC-020).
+  let appliedQuery = $state("");
+  // Totals for the header/aside stats: tracked from the last unfiltered load (and
+  // nudged on save) so they keep showing the whole account, not just a search's hits.
+  let totalCount = $state(0);
+  let totalWordsCount = $state(0);
 
   const q = $derived(query.trim().toLowerCase());
-  const sorted = $derived([...notes].sort((a, b) => b.created_at.localeCompare(a.created_at)));
-  const results = $derived(
-    q ? sorted.filter((n) => (n.title + " " + n.body).toLowerCase().includes(q)) : sorted,
-  );
-  const totalWords = $derived(
-    notes.reduce((sum, n) => sum + n.body.trim().split(/\s+/).filter(Boolean).length, 0),
-  );
   const draftWords = $derived(draftBody.trim().split(/\s+/).filter(Boolean).length);
 
   function pad(n) {
@@ -104,12 +105,22 @@
     navigate("sign-in");
   }
 
-  async function loadNotes() {
+  async function loadNotes(term) {
+    const searchTerm = (term ?? query).trim();
     loading = true;
     listError = "";
     try {
-      const data = await apiFetch("/api/notes");
+      const path = searchTerm ? `/api/notes?q=${encodeURIComponent(searchTerm)}` : "/api/notes";
+      const data = await apiFetch(path);
       notes = Array.isArray(data?.notes) ? data.notes : [];
+      appliedQuery = searchTerm;
+      if (!searchTerm) {
+        totalCount = notes.length;
+        totalWordsCount = notes.reduce(
+          (sum, n) => sum + n.body.trim().split(/\s+/).filter(Boolean).length,
+          0,
+        );
+      }
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
         handleUnauthorized();
@@ -132,6 +143,8 @@
         body: JSON.stringify({ title: draftTitle.trim(), body: draftBody.trim() }),
       });
       notes = [data.note, ...notes];
+      totalCount = totalCount + 1;
+      totalWordsCount = totalWordsCount + data.note.body.trim().split(/\s+/).filter(Boolean).length;
       newId = data.note.id;
       composerOpen = false;
       draftTitle = "";
@@ -172,8 +185,8 @@
     navigate("sign-in");
   }
 
-  function openNote() {
-    navigate("note");
+  function openNote(note) {
+    navigate("note/" + note.id);
   }
 
   function onKey(event) {
@@ -185,8 +198,24 @@
     }
   }
 
+  // Fires once immediately on mount for the initial list, then once per debounced
+  // keystroke after that: GET /api/notes?q=<text> is the only source of what's shown,
+  // there is no client-side filtering of a previously-fetched list.
+  let searchTimer;
+  let firstSearch = true;
+
   $effect(() => {
-    loadNotes();
+    const term = query;
+    clearTimeout(searchTimer);
+    if (firstSearch) {
+      firstSearch = false;
+      loadNotes(term);
+      return;
+    }
+    searchTimer = setTimeout(() => {
+      loadNotes(term);
+    }, 300);
+    return () => clearTimeout(searchTimer);
   });
 
   $effect(() => {
@@ -249,11 +278,11 @@
       >
         <div class="flex gap-2">
           <dt style="color: {brand.neutralColor}">Notes</dt>
-          <dd>{pad(notes.length)}</dd>
+          <dd>{pad(totalCount)}</dd>
         </div>
         <div class="flex gap-2">
           <dt style="color: {brand.neutralColor}">Words</dt>
-          <dd>{totalWords.toLocaleString("en-GB")}</dd>
+          <dd>{totalWordsCount.toLocaleString("en-GB")}</dd>
         </div>
         <div class="flex gap-2">
           <dt style="color: {brand.neutralColor}">Account</dt>
@@ -331,7 +360,7 @@
             style="color: {brand.neutralColor}"
           >
             {#if q}
-              Showing {pad(results.length)} of {pad(notes.length)} — matching “{query.trim()}”
+              Showing {pad(notes.length)} of {pad(totalCount)} — matching “{query.trim()}”
             {:else}
               Showing all {pad(notes.length)} of your notes, newest first
             {/if}
@@ -554,7 +583,7 @@
                 </div>
               {/each}
             </div>
-          {:else if notes.length === 0}
+          {:else if notes.length === 0 && !appliedQuery}
             <div
               class="mt-4 border-[3px] bg-white px-8 py-14 text-center"
               style="border-color: {brand.primaryColor}; box-shadow: 8px 8px 0 {brand.primaryColor};"
@@ -582,7 +611,7 @@
                 Write your first note
               </button>
             </div>
-          {:else if results.length === 0}
+          {:else if notes.length === 0}
             <div
               class="mt-4 border-[3px] bg-white px-8 py-12"
               style="border-color: {brand.primaryColor}; box-shadow: 8px 8px 0 {brand.primaryColor};"
@@ -597,7 +626,7 @@
                 class="mt-4 max-w-[60ch] text-sm leading-relaxed"
                 style="color: {brand.neutralColor}"
               >
-                Search reads the title and body of all {notes.length} of your notes, and nothing outside
+                Search reads the title and body of all {totalCount} of your notes, and nothing outside
                 your account. Try a shorter word, or clear the box to see the whole list again.
               </p>
               <div class="mt-7 flex flex-wrap gap-4">
@@ -628,7 +657,7 @@
               class="mt-4 border-[3px] bg-white"
               style="border-color: {brand.primaryColor}; box-shadow: 8px 8px 0 {brand.primaryColor};"
             >
-              {#each results as note, i (note.id)}
+              {#each notes as note, i (note.id)}
                 <li
                   class="border-b-[3px] transition-colors duration-700 last:border-b-0 motion-reduce:transition-none"
                   style="border-color: {brand.primaryColor}; border-left: {note.id === newId
@@ -647,7 +676,7 @@
                       <h3 class="text-2xl leading-tight" style="font-family: {brand.fontHeading}">
                         <button
                           type="button"
-                          onclick={openNote}
+                          onclick={() => openNote(note)}
                           class="text-left underline-offset-[6px] transition-colors duration-150 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
                           style="outline-color: {brand.accentColor};"
                         >
@@ -691,7 +720,7 @@
                     <div class="flex shrink-0 items-center gap-3">
                       <button
                         type="button"
-                        onclick={openNote}
+                        onclick={() => openNote(note)}
                         class="inline-flex min-h-[44px] items-center gap-2 border-[3px] px-4 py-2.5 text-[11px] uppercase tracking-[0.2em] transition-colors duration-150 hover:bg-[var(--ink)] hover:text-[var(--paper)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
                         style="border-color: {brand.primaryColor}; outline-color: {brand.accentColor};"
                       >
@@ -715,12 +744,12 @@
 
         <div class="mt-4 border-[3px] bg-white" style="border-color: {brand.primaryColor}">
           <div class="border-b-[3px] p-5" style="border-color: {brand.primaryColor}">
-            <Stat label="Notes kept" value={pad(notes.length)} hint="All saved to your account" />
+            <Stat label="Notes kept" value={pad(totalCount)} hint="All saved to your account" />
           </div>
           <div class="p-5">
             <Stat
               label="Words written"
-              value={totalWords.toLocaleString("en-GB")}
+              value={totalWordsCount.toLocaleString("en-GB")}
               hint="Across every note"
             />
           </div>
