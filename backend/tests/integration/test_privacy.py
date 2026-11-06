@@ -30,9 +30,9 @@ def test_ac022_list_search_get_put_delete_never_touch_other_users_notes() -> Non
     a = _signed_in_client()
     b = _signed_in_client()
 
-    a_note = a.post("/api/notes", json={"title": "A's secret plan", "body": "only A should see"}).get_json()[
-        "note"
-    ]
+    a_note = a.post(
+        "/api/notes", json={"title": "A's secret plan", "body": "only A should see"}
+    ).get_json()["note"]
     b_note = b.post(
         "/api/notes", json={"title": "B's secret plan", "body": "only B should see"}
     ).get_json()["note"]
