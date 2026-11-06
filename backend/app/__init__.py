@@ -8,7 +8,7 @@ view is implemented.
 
 import os
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_login import LoginManager
 from sqlalchemy import text
@@ -48,7 +48,19 @@ def create_app() -> Flask:
     allowed = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
     CORS(app, origins=allowed or dev_origins, supports_credentials=True)
 
+    # The SPA and API are on different origins, so the session cookie Flask-Login sets
+    # has to be marked SameSite=None (sent cross-site) and Secure (which SameSite=None
+    # requires the browser to see).
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
+    app.config["SESSION_COOKIE_SECURE"] = True
+
     login_manager.init_app(app)
+
+    @login_manager.unauthorized_handler
+    def unauthorized() -> tuple[dict[str, str], int]:
+        """JSON 401 rather than Flask-Login's default redirect to a login view this API
+        does not have."""
+        return jsonify({"error": "unauthorized", "message": "Authentication required."}), 401
 
     # citext (case-insensitive email) is a PostgreSQL extension, not a built-in type --
     # it has to exist in the database before create_all can create a column of that type.

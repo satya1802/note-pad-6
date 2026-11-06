@@ -1,38 +1,79 @@
 """Views for API.
 
 Endpoints the approved API spec declares without naming a component that owns them.
-
-Every view is a stub returning a placeholder. The shape comes from the approved
-API spec; the behaviour does not exist yet.
 """
 
-from flask import Blueprint
+from flask import Blueprint, jsonify, request
+from flask_login import current_user, login_required, login_user, logout_user
 
-from app.stubs import not_implemented
+from app.database import SessionLocal
+from app.services.auth_service import (
+    EmailAlreadyInUse,
+    ValidationError,
+    authenticate,
+    register_user,
+    serialize_user,
+)
 
 bp = Blueprint("api", __name__)
 
 
 @bp.route("/api/auth/register", methods=["POST"])
-def post_api_auth_register() -> dict[str, str]:
+def post_api_auth_register():
     """Create an account from email and password, validating format/uniqueness, then start
     a session."""
-    return not_implemented("POST /api/auth/register")
+    data = request.get_json(silent=True) or {}
+    email = data.get("email")
+    password = data.get("password")
+
+    with SessionLocal() as session:
+        try:
+            user = register_user(session, email, password)
+        except ValidationError as exc:
+            return jsonify({"error": "validation_failed", "fields": exc.errors}), 422
+        except EmailAlreadyInUse:
+            return (
+                jsonify(
+                    {"error": "email_in_use", "message": "That email is already registered."}
+                ),
+                409,
+            )
+
+        login_user(user)
+        return jsonify({"user": serialize_user(user)}), 201
 
 
 @bp.route("/api/auth/login", methods=["POST"])
-def post_api_auth_login() -> dict[str, str]:
+def post_api_auth_login():
     """Authenticate email and password and start a web-managed session."""
-    return not_implemented("POST /api/auth/login")
+    data = request.get_json(silent=True) or {}
+    email = data.get("email")
+    password = data.get("password")
+
+    with SessionLocal() as session:
+        user = authenticate(session, email, password)
+        if user is None:
+            return (
+                jsonify(
+                    {"error": "invalid_credentials", "message": "Invalid email or password."}
+                ),
+                401,
+            )
+
+        login_user(user)
+        return jsonify({"user": serialize_user(user)}), 200
 
 
 @bp.route("/api/auth/logout", methods=["POST"])
-def post_api_auth_logout() -> dict[str, str]:
+@login_required
+def post_api_auth_logout():
     """End the current session."""
-    return not_implemented("POST /api/auth/logout")
+    logout_user()
+    return jsonify({"message": "signed out"}), 200
 
 
 @bp.route("/api/auth/me", methods=["GET"])
-def get_api_auth_me() -> dict[str, str]:
+@login_required
+def get_api_auth_me():
     """Return the current signed-in user or unauthenticated."""
-    return not_implemented("GET /api/auth/me")
+    return jsonify({"user": serialize_user(current_user)}), 200

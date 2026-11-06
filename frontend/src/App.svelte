@@ -19,11 +19,24 @@
 
 <script lang="ts">
   import { go, location, matches } from "./lib/router.svelte";
+  import { session, refreshSession } from "./lib/session.svelte";
 
   const current = $derived(routes.find((route) => matches(route.path, location.path)));
 
   $effect(() => {
     if (!current) go(fallback, true);
+  });
+
+  $effect(() => {
+    refreshSession();
+  });
+
+  // Protected routes (anything not marked `bare`) require an active session: once the
+  // one-time /api/auth/me check comes back without a user, send the visitor to sign in.
+  $effect(() => {
+    if (session.checked && !session.user && current && !current.bare) {
+      go(fallback, true);
+    }
   });
 
   function linkClass(path: string): string {
@@ -42,7 +55,7 @@
 
 {#if current?.bare}
   <current.component />
-{:else if current}
+{:else if current && session.checked && session.user}
   <div class="flex min-h-screen">
     <aside
       class="w-56 shrink-0 border-r p-4"
